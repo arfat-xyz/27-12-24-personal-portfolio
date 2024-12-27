@@ -2,11 +2,13 @@
 import ReactMarkdown from "react-markdown";
 import MarkdownEditor from "react-markdown-editor-lite";
 import "react-markdown-editor-lite/lib/index.css";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { ReactNode, useEffect, useState } from "react";
+import CreatableSelect from "react-select/creatable";
+import { useEffect, useState } from "react";
+import Select from "react-select";
 import {
   frontendErrorResponse,
   frontendSuccessResponse,
@@ -16,8 +18,7 @@ import toast from "react-hot-toast";
 import { ItemInterface, ReactSortable } from "react-sortablejs";
 import { MdDeleteForever } from "react-icons/md";
 import { CldUploadWidget } from "next-cloudinary";
-import { Blog as PrsimaBLog } from "@prisma/client";
-import { deleteImages } from "@/lib/cloudinary";
+import { BlogCategory, Blog as PrsimaBLog } from "@prisma/client";
 
 // Define the Zod schema for validation
 const blogSchema = z.object({
@@ -37,21 +38,44 @@ const blogSchema = z.object({
       "Slug can only contain lowercase letters, numbers, and hyphens"
     ),
   blogCategory: z
-    .array(z.string())
+    .array(
+      z.object({
+        label: z.string(),
+        value: z.string(),
+      })
+    )
     .nonempty("At least one category must be selected"),
   images: z.array(z.string()).optional(),
   description: z.string().nonempty("Blog content is required"),
-  tags: z.array(z.string()).nonempty("At least one tag must be selected"),
+  tags: z
+    .array(
+      z.object({
+        label: z.string(),
+        value: z.string(),
+      })
+    )
+    .nonempty("At least one tag must be selected"),
   status: z.string().nonempty("Status is required"),
 });
 
 // Infer the form data type from the Zod schema
 type BlogFormData = z.infer<typeof blogSchema>;
+const tagOptions = z.object({
+  label: z.string(),
+  value: z.string(),
+});
 
-export default function Blog({ blog }: { blog?: PrsimaBLog }) {
+type TagOptionsProps = z.infer<typeof tagOptions>;
+export default function Blog({
+  blog,
+  category,
+}: {
+  blog?: PrsimaBLog & { blogCategoryIds: string[] };
+  category: BlogCategory[];
+}) {
   const [redirect, setRedirect] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false);
   const [images, setImages] = useState<string[]>(blog?.images ?? []);
+
   const {
     register,
     handleSubmit,
@@ -60,33 +84,70 @@ export default function Blog({ blog }: { blog?: PrsimaBLog }) {
     setError,
     formState: { errors, isSubmitting },
     clearErrors,
+    control,
   } = useForm<BlogFormData>({
     resolver: zodResolver(blogSchema),
     defaultValues: {
       title: blog?.title ?? "",
       slug: blog?.slug ?? "",
-      blogCategory: blog?.blogCategory?.length ? blog.blogCategory : [],
+      // blogCategory: [],
+      blogCategory: blog?.blogCategoryIds.length
+        ? category
+            .filter((cat) => blog?.blogCategoryIds.includes(cat.id)) // Filter categories with matching ids
+            .map((cat) => ({ label: cat.name, value: cat.id }))
+        : [],
       description: blog?.description ?? "",
-      tags: blog?.tags?.length ? blog.tags : [],
+      tags: blog?.tags?.length
+        ? blog.tags.map((cat) => ({
+            label: cat,
+            value: cat,
+          }))
+        : [],
       status: blog?.status ?? "Draft",
     },
   });
+  const [tagOptions, setTagOptions] = useState<TagOptionsProps[]>(
+    category.map((cat) => ({
+      label: cat.name,
+      value: cat.id,
+    }))
+  );
   const router = useRouter();
   const onSubmit = async (data: BlogFormData) => {
+    const { blogCategory, tags, ...others } = data;
+    const newBlogCategory = blogCategory.map((c) => c.value);
+    const newtags = tags.map((c) => c.label);
+
     if (!images.length)
       return setError("images", {
         message: "Minimum one  image requied",
         type: "manual",
       });
     data.images = [...images];
-    // Handle form submission
     try {
       if (blog?.id) {
-        const response = await axios.put(`/api/blogs/${blog?.id}`, data);
-        console.log({ response });
+        await axios
+          .put(`/api/blogs/${blog?.id}`, {
+            ...others,
+            blogCategory: newBlogCategory,
+            tags: newtags,
+            images: [...images],
+          })
+          .then((res) => {
+            frontendSuccessResponse({ message: res?.data?.message });
+            return router.push("/blogs");
+          })
+          .catch((e) =>
+            frontendErrorResponse({ message: e?.response?.data?.message })
+          );
       } else {
         await axios
-          .post(`/api/blogs`, data)
+          .post(`/api/blogs`, {
+            ...others,
+            blogCategory: newBlogCategory,
+            tags: newtags,
+            images: [...images],
+          })
           .then((res) => {
             frontendSuccessResponse({ message: res?.data?.message });
             return router.push("/blogs");
@@ -100,6 +161,18 @@ export default function Blog({ blog }: { blog?: PrsimaBLog }) {
       frontendErrorResponse({ message: `Something went wrong` });
     }
   };
+
+  // Synchronize default tags with `tagOptions`
+  useEffect(() => {
+    const initialTags = blog?.tags?.map((tag) => ({
+      label: tag,
+      value: tag,
+    }));
+
+    if (initialTags) {
+      setTagOptions((prev) => [...new Set([...prev, ...initialTags])]);
+    }
+  }, [blog, category]);
   useEffect(() => {
     const slug = watch("slug"); // Get the current value of the slug field
 
@@ -143,7 +216,6 @@ export default function Blog({ blog }: { blog?: PrsimaBLog }) {
   //     toast.error("An error occure");
   //   }
   // }
-
   const updateImagesOrder = (images: string[]) => {
     setImages(images);
   };
@@ -189,12 +261,63 @@ export default function Blog({ blog }: { blog?: PrsimaBLog }) {
         {/* blog category */}
         <div className="w-100 flex flex-col flex-left mb-2">
           <label htmlFor="category">Select Category</label>
-          <select id="category" multiple {...register("blogCategory")}>
+          {/* <select id="category" multiple {...register("blogCategory")}>
             <option value="Node js">Node js</option>
-            <option value="React js">React js</option>
-            <option value="Next js">Next js</option>
-            <option value="Digital Marketing">Digital Marketing</option>
-          </select>
+            {category.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select> */}
+          {/* <Select
+            closeMenuOnSelect={false}
+            defaultValue={blog?.id ? [] : []}
+            isMulti
+            options={options}
+            className="w-full"
+            {...register("blogCategory")}
+          /> */}
+          {/* <Controller
+            name="blogCategory"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={category.map((cat) => ({
+                  label: cat.name,
+                  value: cat.id,
+                }))}
+                defaultValue={[]}
+                isMulti
+                closeMenuOnSelect={false}
+                className="w-full"
+                value={category.map((cat) => ({
+                  label: cat.name,
+                  value: cat.id,
+                }))}
+                onChange={(selected) =>
+                  field.onChange(selected?.map((option) => option.value))
+                } // Map selected values to their IDs
+              />
+            )}
+          /> */}
+          <Controller
+            name="blogCategory"
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={category.map((cat) => ({
+                  label: cat.name,
+                  value: cat.id,
+                }))}
+                isMulti
+                closeMenuOnSelect={false}
+                className="w-full"
+                onChange={(selected) => field.onChange(selected)} // Set the selected value
+              />
+            )}
+          />
           {errors.blogCategory && (
             <span className="form-error">{errors.blogCategory.message}</span>
           )}
@@ -261,7 +384,10 @@ export default function Blog({ blog }: { blog?: PrsimaBLog }) {
                 <div className="uploadedimg" key={index}>
                   <img src={link} alt="image" className="object-cover" />
                   <div className="deleteimg">
-                    <button onClick={() => handleDeleteImage(index, link)}>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteImage(index, link)}
+                    >
                       <MdDeleteForever />
                     </button>
                   </div>
@@ -293,14 +419,48 @@ export default function Blog({ blog }: { blog?: PrsimaBLog }) {
         {/* tags */}
         <div className="w-100 flex flex-col flex-left mb-2">
           <label htmlFor="tags">Tags</label>
-          <select id="tags" multiple {...register("tags")}>
+          {/* <select id="tags" multiple {...register("tags")}>
             <option value="html">html</option>
             <option value="css">css</option>
             <option value="Javascript">Javascript</option>
             <option value="nextjs">nextjs</option>
             <option value="reactjs">reactjs</option>
             <option value="database">database</option>
-          </select>
+          </select> */}
+          <Controller
+            name="tags"
+            control={control}
+            render={({ field }) => (
+              <CreatableSelect
+                isMulti
+                closeMenuOnSelect={false}
+                options={tagOptions}
+                className="w-full"
+                value={field.value}
+                onChange={(selected) => {
+                  // Update form field
+                  field.onChange(selected);
+
+                  // Add new tags to `tagOptions` if created
+                  selected.forEach((tag) => {
+                    if (
+                      !tagOptions.find((option) => option.value === tag.value)
+                    ) {
+                      setTagOptions((prev) => [...prev, tag]);
+                    }
+                  });
+                }}
+                onCreateOption={(inputValue) => {
+                  const newTag = { label: inputValue, value: inputValue };
+
+                  // Add the new tag to options and update the form
+                  setTagOptions((prev) => [...prev, newTag]);
+                  const updatedTags = [...(field.value || []), newTag];
+                  field.onChange(updatedTags);
+                }}
+              />
+            )}
+          />
           {errors.tags && (
             <span className="form-error">{errors.tags.message}</span>
           )}

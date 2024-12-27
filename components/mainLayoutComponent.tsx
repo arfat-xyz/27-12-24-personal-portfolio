@@ -12,7 +12,13 @@ const MainLayoutComponent = ({ children }: { children: ReactNode }) => {
       {" "}
       <ParentComponent appOpen={asideOpen} appAsideOpen={asideClickOpen} />
       <main>
-        <div className={asideOpen ? `container` : `container active`}>
+        <div
+          className={
+            asideOpen
+              ? `container max-w-[calc(100%-200px)]`
+              : `container active`
+          }
+        >
           {/* <Component {...pageProps} /> */}
           {children}
         </div>

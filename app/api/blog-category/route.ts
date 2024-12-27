@@ -1,6 +1,7 @@
 import { routeErrorHandler } from "@/lib/api-error-handler";
 import { formatErrorResponse, formatResponse } from "@/lib/api-response";
 import { db } from "@/lib/db";
+import { stringValidation } from "@/lib/validations/combine-validation";
 import { idSchema } from "@/lib/validations/id-context-schema";
 import {
   generateSearchFilter,
@@ -10,17 +11,14 @@ import {
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
-const blogTagPOSTSchema = z.object({
-  name: z.string({
-    invalid_type_error: "Name must be a string",
-    required_error: "Name is required",
-  }),
+export const blogCategoryPOSTSchema = z.object({
+  name: stringValidation("Name"),
 });
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const data = blogTagPOSTSchema.parse(body);
+    const data = blogCategoryPOSTSchema.parse(body);
     const blogTagAlreadyExist = await db.blogCategory.count({
       where: {
         name: data.name,
@@ -34,23 +32,7 @@ export async function POST(req: Request) {
     return routeErrorHandler(error);
   }
 }
-export async function DELETE(req: Request) {
-  try {
-    const url = new URL(req.url);
-    const searchParams = Object.fromEntries(url.searchParams.entries());
-    const paramsData = idSchema.parse(searchParams);
-    await db.blogCategory.delete({
-      where: {
-        id: paramsData.id,
-      },
-    });
-    return formatResponse(true, "Operation completed successfully", 200);
-  } catch (error) {
-    // console.error(error, "from error"); // Log the error for debugging
 
-    return routeErrorHandler(error);
-  }
-}
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);

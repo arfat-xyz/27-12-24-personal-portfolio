@@ -5,19 +5,31 @@ import { blogPOSTSchema } from "@/lib/validations/blogValidation";
 import {
   generateSearchFilter,
   paginationSearchForBlogSchema,
-  paginationSearchSchema,
 } from "@/lib/validations/pagination-search-zod";
 import { BlogStatus, Prisma } from "@prisma/client";
-import { z } from "zod";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const data = await blogPOSTSchema.parseAsync(body);
-    const blogDoc = await db.blog.create({ data: { ...data } });
+    const { blogCategory, ...othersData } = data;
+    const blogDoc = await db.blog.create({ data: { ...othersData } });
+
+    // Check for invalid or duplicate tags
+    const validTags = await db.blogCategory.findMany({
+      where: { id: { in: blogCategory } },
+      select: { id: true },
+    });
+    const validTagIds = validTags.map((tag) => tag.id);
+    await db.blogCategoryRelation.createMany({
+      data: validTagIds.map((tagId) => ({
+        blogId: blogDoc.id,
+        blogCategoryId: tagId,
+      })),
+    });
     return formatResponse(blogDoc, "Operation completed successfully", 200);
   } catch (error) {
-    // console.error(error, "from error"); // Log the error for debugging
+    console.error(error, "from error"); // Log the error for debugging
 
     return routeErrorHandler(error);
   }

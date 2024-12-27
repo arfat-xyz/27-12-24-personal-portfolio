@@ -26,11 +26,50 @@ export async function PUT(
       },
     });
     if (!existingBlog) return formatErrorResponse("Blog not found", 404);
+    const { blogCategory, ...others } = data;
+
+    // Check for invalid or duplicate tags
+    const validTags = await db.blogCategory.findMany({
+      where: { id: { in: blogCategory } },
+      select: { id: true },
+    });
+    const validTagIds = validTags.map((tag) => tag.id);
+    if (validTagIds.length !== blogCategory?.length) {
+      return formatErrorResponse("One or more tags are invalid", 400);
+    }
+
+    // Filter out existing relations to avoid duplicates
+    const existingRelations = await db.blogCategoryRelation.findMany({
+      where: { blogId },
+      select: { blogCategoryId: true },
+    });
+    const existingTagIds = existingRelations.map((rel) => rel.blogCategoryId);
+    const newTagIds = validTagIds.filter((id) => !existingTagIds.includes(id));
+    if (newTagIds.length > 0) {
+      // Create new relations in bulk
+      await db.blogCategoryRelation.createMany({
+        data: newTagIds.map((tagId) => ({ blogId, blogCategoryId: tagId })),
+      });
+    }
+
+    const tagIdsToDelete = existingTagIds.filter(
+      (id) => !validTagIds.includes(id)
+    );
+
+    if (tagIdsToDelete.length > 0) {
+      await db.blogCategoryRelation.deleteMany({
+        where: {
+          blogId,
+          blogCategoryId: { in: tagIdsToDelete },
+        },
+      });
+    }
+
     const blogDoc = await db.blog.update({
       where: {
         id: blogId,
       },
-      data,
+      data: others,
     });
     return formatResponse(blogDoc, "Blog updated successfully", 200);
   } catch (error) {

@@ -7,10 +7,18 @@ export const paramsSchema = z.object({
     required_error: "Blog id is required",
   }),
 });
-
+export const categoryIdSchema = z.object({
+  id: z.string({
+    invalid_type_error: "Category id must be a string",
+    required_error: "Category  id is required",
+  }),
+});
 // Use the reusable paramsSchema in routeBlogContextSchema
 export const routeBlogContextSchema = z.object({
   params: paramsSchema, // Reuse the paramsSchema here
+});
+export const routeCateogoryContextSchema = z.object({
+  params: categoryIdSchema, // Reuse the paramsSchema here
 });
 export const idSchema = z.object({
   id: z.string({

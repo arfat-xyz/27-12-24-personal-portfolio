@@ -66,6 +66,9 @@ export default function Aside({
                   <Link href={`/blogs/addblog`}>
                     <li>Add Blog</li>
                   </Link>
+                  <Link href={`/blogs/category`}>
+                    <li>All Category</li>
+                  </Link>
                 </ul>
               </>
             ) : (

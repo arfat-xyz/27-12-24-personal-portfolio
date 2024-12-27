@@ -10,13 +10,10 @@ export async function generateMetadata(
   { params }: SingleBlogPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const { id } = await params;
   const singleBlogDetails = await db.blog.findUnique({
     where: {
-      id: params.id,
-    },
-    select: {
-      title: true,
-      description: true,
+      id,
     },
   });
 
@@ -44,13 +41,34 @@ const SingleBlogEdit = async (
     where: {
       id,
     },
+    include: {
+      BlogTagRelation: {
+        where: {
+          blogId: id,
+        },
+        include: {
+          blogCategory: true,
+        },
+      },
+    },
   });
+
   if (!singleBlogDetails?.id) {
     frontendErrorResponse({ message: `Blog not found` });
     return redirect("/");
   }
+  const blogCategoryIds =
+    singleBlogDetails?.BlogTagRelation?.map(
+      (relation) => relation.blogCategoryId
+    ) ?? [];
+
+  const category = await db.blogCategory.findMany({});
+  console.log({ blogCategoryIds, singleBlogDetails });
   return (
-    <SingleBlogEditClientComponent singleBlogDetails={singleBlogDetails} />
+    <SingleBlogEditClientComponent
+      singleBlogDetails={{ blogCategoryIds, ...singleBlogDetails }}
+      category={category}
+    />
   );
 };
 

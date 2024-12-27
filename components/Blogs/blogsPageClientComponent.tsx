@@ -13,7 +13,7 @@ import BreadcrumbWithAdminPanel from "../breadcrumb-with-admin-panel";
 const BlogsPageClientComponent = () => {
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(2);
+  const [perPage] = useState(10);
 
   //search
   const [searchQuery, setSearchQuery] = useState(``);

@@ -1,23 +1,32 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
 import BreadcrumbWithAdminPanel from "../breadcrumb-with-admin-panel";
 import Dataloading from "../Dataloading";
 import Link from "next/link";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import { FaEdit } from "react-icons/fa";
 import { BlogCategory } from "@prisma/client";
 import axios from "axios";
-import { frontendErrorResponse } from "@/lib/frontend-response-toast";
+import {
+  frontendErrorResponse,
+  frontendSuccessResponse,
+} from "@/lib/frontend-response-toast";
+import AddAndEditComponent from "./add-and-edit-component";
+import AnyModalComponent from "../any-modal-component";
+import { GrAddCircle } from "react-icons/gr";
+import DeleteModalComponent from "../delete-modal-component";
 
 const CategoryPageClientComponent = () => {
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(2);
+  const [perPage] = useState(10);
 
   const [searchQuery, setSearchQuery] = useState(``);
   const [totalPage, setTotalPage] = useState(1);
   const [allData, setAllData] = useState<BlogCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(false);
+  const [reloadData, setReloadData] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     if (initialLoad) {
@@ -26,13 +35,11 @@ const CategoryPageClientComponent = () => {
       return;
     }
 
-    setIsLoading(true);
-
     const fetchAllData = async () => {
-      console.log({ hasdf: "asdf" });
       try {
+        setIsLoading(true);
         const res = await axios.get(
-          `/api/blogs?q=${searchQuery}&page=${currentPage}&limit=${perPage}`
+          `/api/blog-category?q=${searchQuery}&page=${currentPage}&limit=${perPage}`
         );
         const returnData = res?.data?.data;
         setAllData(returnData.result);
@@ -41,10 +48,27 @@ const CategoryPageClientComponent = () => {
       } catch (error) {
         console.error({ error });
         return frontendErrorResponse({ message: "Something went wrong" });
+      } finally {
+        setIsLoading(false);
+        setReloadData(false);
       }
     };
     fetchAllData();
-  }, [searchQuery, currentPage]);
+  }, [searchQuery, currentPage, reloadData]);
+
+  const handleDeleteFunc = async (id: string) => {
+    await axios
+      .delete(`/api/blog-category/${id}`)
+      .then((res) => {
+        frontendSuccessResponse({ message: res?.data?.message });
+        setIsDeleteModalOpen(false); // Close the modal after submission
+        setReloadData(true);
+      })
+      .catch((e) =>
+        frontendErrorResponse({ message: e?.response?.data?.message })
+      );
+  };
+  console.log({ allData, currentPage, totalPage });
   return (
     <div className="blogpage">
       <BreadcrumbWithAdminPanel
@@ -53,20 +77,24 @@ const CategoryPageClientComponent = () => {
         spanTitleTwo="Blogs"
       />
       <div className="blogstable">
-        <div className="flex gap-2 mb-1">
-          <h2>Search Blogs:</h2>
-          <input
-            type="text"
-            value={searchQuery}
-            placeholder="Search by title"
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        <div className="flex justify-between">
+          <div className="flex gap-2 mb-1">
+            <h2>Search Blogs:</h2>
+            <input
+              type="text"
+              value={searchQuery}
+              placeholder="Search by title"
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div className="">
+            <AddAndEditComponent setReloadData={setReloadData} />
+          </div>
         </div>
         <table className="table table-styling">
           <thead>
             <tr>
               <th>#</th>
-              <th>Image</th>
               <th>Title</th>
               <th>Edit / Delete</th>
             </tr>
@@ -87,29 +115,32 @@ const CategoryPageClientComponent = () => {
                 </td>
               </tr>
             ) : (
-              allData.map((blog, index) => (
-                <tr key={blog?.id}>
-                  {/* <td>{0 + index + 1}</td>
+              allData.map((category, index) => (
+                <tr key={category?.id}>
+                  <td>{0 + index + 1}</td>
                   <td>
-                    <img src={blog.images[0]} width={180} alt="image" />
-                  </td>
-                  <td>
-                    <h3>{blog.title}</h3>
+                    <h3>{category.name}</h3>
                   </td>
                   <td>
                     <div className="flex gap-2 flex-center">
-                      <Link href={`/blogs/edit/${blog.id}`}>
-                        <button>
-                          <FaEdit />
-                        </button>
-                      </Link>
-                      <Link href={`/blogs/delete/${blog.id}`}>
+                      <AddAndEditComponent
+                        category={category}
+                        setReloadData={setReloadData}
+                      />
+                      {/* <Link href={`/blogs/delete/${category.id}`}>
                         <button>
                           <RiDeleteBin6Fill />
                         </button>
-                      </Link>
+                      </Link> */}
+                      <DeleteModalComponent
+                        buttontext={<RiDeleteBin6Fill />}
+                        isOpen={isDeleteModalOpen}
+                        setIsOpen={setIsDeleteModalOpen}
+                        modalHeading="Delete cannot be undone"
+                        onClickFunc={() => handleDeleteFunc(category?.id)}
+                      />
                     </div>
-                  </td> */}
+                  </td>
                 </tr>
               ))
             )}

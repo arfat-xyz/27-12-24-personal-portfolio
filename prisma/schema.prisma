@@ -23,6 +23,7 @@ model Blog {
   createdAt       DateTime               @default(now())
   updatedAt       DateTime               @updatedAt
   blogTagId       String?
+  tags            String[]
   BlogTagRelation BlogCategoryRelation[] @relation("Blog")
 
   @@map("blogs") // Matches the MongoDB collection name
@@ -40,7 +41,7 @@ model BlogCategoryRelation {
   blogId         String
   blogCategoryId String
   blog           Blog         @relation("Blog", fields: [blogId], references: [id])
-  tag            BlogCategory @relation("BlogTag", fields: [blogCategoryId], references: [id])
+  blogCategory   BlogCategory @relation("BlogTag", fields: [blogCategoryId], references: [id])
 
   @@unique([blogId, blogCategoryId])
 }

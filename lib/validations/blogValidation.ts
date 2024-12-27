@@ -37,27 +37,33 @@ export const blogPOSTSchema = z.object({
       }
     ),
   images: z.array(
-    z.union([
-      z
-        .any()
-        .refine(
-          (file) => typeof file === "string" || !!file,
-          "Image is required"
-        )
-        .refine(
-          (file) =>
-            typeof file === "string" || !checkIsItValidateImageType(file.type),
-          "Only JPEG, PNG, WebP, and SVG formats are supported"
-        ),
-      // .refine(
-      //   (file) => typeof file === "string" || file.size <= 2 * 1024 * 1024,
-      //   "Image size only less then 2MB"
-      // ),
-      z.string({
-        invalid_type_error: "Each image must be a string",
-        required_error: "Each image is required",
-      }), // Supports both file and URL as string
-    ])
+    z.union(
+      [
+        z
+          .any()
+          .refine(
+            (file) => typeof file === "string" || !!file,
+            "Image is required"
+          )
+          .refine(
+            (file) =>
+              typeof file === "string" ||
+              !checkIsItValidateImageType(file.type),
+            "Only JPEG, PNG, WebP, and SVG formats are supported"
+          ),
+        // .refine(
+        //   (file) => typeof file === "string" || file.size <= 2 * 1024 * 1024,
+        //   "Image size only less then 2MB"
+        // ),
+        z.string({
+          invalid_type_error: "Each image must be a string",
+          required_error: "Each image is required",
+        }), // Supports both file and URL as string
+      ],
+      {
+        required_error: "Images are required",
+      }
+    )
   ),
   description: z.string({
     required_error: "Description is required",
