@@ -1,0 +1,14 @@
+{
+  "editor.tabSize": 2,
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "variable.other.readwrite.unused",
+        "settings": {
+          "foreground": "#0062ff", // Change to your desired color
+          "fontStyle": "underline"
+        }
+      }
+    ]
+  }
+}

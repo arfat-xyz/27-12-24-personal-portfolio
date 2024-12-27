@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum BlogStatus {
+  Draft
+  Publish
+}
+
+model Blog {
+  id              String                 @id @default(cuid()) @map("_id")
+  title           String
+  slug            String                 @unique
+  images          String[] // Array of strings
+  description     String
+  status          BlogStatus?            @default(Draft)
+  comments        Comment[]              @relation("BlogComments")
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  blogTagId       String?
+  BlogTagRelation BlogCategoryRelation[] @relation("Blog")
+
+  @@map("blogs") // Matches the MongoDB collection name
+}
+
+// model BlogCategory {
+//   id    String   @id @default(cuid()) @map("_id")
+//   name  String   @unique
+//   blogs Blog[]   @relation("BlogCategories")
+//   createdAt DateTime @default(now())
+// }
+
+model BlogCategoryRelation {
+  id             String       @id @default(cuid()) @map("_id")
+  blogId         String
+  blogCategoryId String
+  blog           Blog         @relation("Blog", fields: [blogId], references: [id])
+  tag            BlogCategory @relation("BlogTag", fields: [blogCategoryId], references: [id])
+
+  @@unique([blogId, blogCategoryId])
+}
+
+model BlogCategory {
+  id        String   @id @default(cuid()) @map("_id")
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  BlogCategoryRelation BlogCategoryRelation[] @relation("BlogTag")
+}
+
+model Comment {
+  id        String   @id @default(cuid()) @map("_id")
+  content   String
+  blog      Blog     @relation("BlogComments", fields: [blogId], references: [id])
+  blogId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
