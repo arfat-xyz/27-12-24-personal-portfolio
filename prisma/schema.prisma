@@ -12,6 +12,11 @@ enum BlogStatus {
   Publish
 }
 
+enum ProjectStatus {
+  Draft
+  Publish
+}
+
 model Blog {
   id              String                 @id @default(cuid()) @map("_id")
   title           String
@@ -40,8 +45,8 @@ model BlogCategoryRelation {
   id             String       @id @default(cuid()) @map("_id")
   blogId         String
   blogCategoryId String
-  blog           Blog         @relation("Blog", fields: [blogId], references: [id])
-  blogCategory   BlogCategory @relation("BlogTag", fields: [blogCategoryId], references: [id])
+  blog           Blog         @relation("Blog", fields: [blogId], references: [id], onDelete: Cascade)
+  blogCategory   BlogCategory @relation("BlogTag", fields: [blogCategoryId], references: [id], onDelete: Cascade)
 
   @@unique([blogId, blogCategoryId])
 }
@@ -61,4 +66,42 @@ model Comment {
   blogId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id              String        @id @default(cuid()) @map("_id")
+  slug            String
+  title           String
+  images          String[] // Array of strings
+  description     String
+  client          String?
+  livePreview     String?
+  projectCategory String[]
+  tags            String[]
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @default(now()) @updatedAt @map("updated_at")
+  status          ProjectStatus
+
+  ProjectCategoryRelation ProjectCategoryRelation[] @relation("Project")
+}
+
+model ProjectCategory {
+  id        String   @id @default(cuid()) @map("_id")
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  ProjectCategoryRelation ProjectCategoryRelation[] @relation("ProjectCategory")
+}
+
+model ProjectCategoryRelation {
+  id                String          @id @default(cuid()) @map("_id")
+  projectId         String
+  projectCategoryId String
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @default(now()) @updatedAt @map("updated_at")
+  project           Project         @relation("Project", fields: [projectId], references: [id], onDelete: Cascade)
+  projectCategory   ProjectCategory @relation("ProjectCategory", fields: [projectCategoryId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, projectCategoryId])
 }

@@ -7,6 +7,14 @@ export const paramsSchema = z.object({
     required_error: "Blog id is required",
   }),
 });
+export const paramsProjectIdSchema = z.object({
+  projectId: z.string({
+    invalid_type_error: "Blog must be a string",
+    required_error: "Blog id is required",
+  }),
+});
+
+
 export const categoryIdSchema = z.object({
   id: z.string({
     invalid_type_error: "Category id must be a string",

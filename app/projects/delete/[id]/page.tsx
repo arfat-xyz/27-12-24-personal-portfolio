@@ -1,4 +1,4 @@
-import DeleteSingleBlogClientComponent from "@/components/Blogs/deleteSingleBlogClientComponent";
+import DeleteSingleProjectClientComponent from "@/components/projects/deleteSingleProjectClientComponent";
 import config from "@/lib/config";
 import { db } from "@/lib/db";
 import { SingleProjectPageProps } from "@/types/server-page";
@@ -8,10 +8,9 @@ export async function generateMetadata(
   { params }: SingleProjectPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const { id } = await params;
-  const singleBlogDetails = await db.blog.findUnique({
+  const singleBlogDetails = await db.project.findUnique({
     where: {
-      id,
+      id: params.id,
     },
     select: {
       title: true,
@@ -38,16 +37,15 @@ export default async function DeleteProduct(
   { params }: SingleProjectPageProps,
   parent: ResolvingMetadata
 ) {
-  const { id } = await params;
-  const singleBlogDetails = await db.blog.findUnique({
+  const singleProjectDetails = await db.project.findUnique({
     where: {
-      id,
+      id: params.id,
     },
   });
-  if (!singleBlogDetails?.id) redirect(`/blogs`);
+  if (!singleProjectDetails?.id) redirect(`/projects`);
   return (
     <>
-      <DeleteSingleBlogClientComponent blog={singleBlogDetails} />
+      <DeleteSingleProjectClientComponent project={singleProjectDetails} />
     </>
   );
 }

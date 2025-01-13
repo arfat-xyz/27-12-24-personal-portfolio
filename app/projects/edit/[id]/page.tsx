@@ -1,4 +1,4 @@
-import SingleBlogEditClientComponent from "@/components/Blogs/singleBlogEditClientComponent";
+import SingleProjectEditClientComponent from "@/components/projects/singleProjectEditClientComponent";
 import config from "@/lib/config";
 import { db } from "@/lib/db";
 import { frontendErrorResponse } from "@/lib/frontend-response-toast";
@@ -10,7 +10,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { id } = await params;
-  const singleBlogDetails = await db.blog.findUnique({
+  const singleProjectDetails = await db.project.findUnique({
     where: {
       id,
     },
@@ -20,15 +20,15 @@ export async function generateMetadata(
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: !singleBlogDetails
+    title: !singleProjectDetails
       ? config.metadataDefaultTitle
-      : singleBlogDetails.title,
+      : singleProjectDetails.title,
     openGraph: {
       images: [config.metadataDefaultImageLink, ...previousImages],
     },
-    description: !singleBlogDetails
+    description: !singleProjectDetails
       ? config.metadataDefaultDescription
-      : singleBlogDetails.title,
+      : singleProjectDetails.title,
   };
 }
 const SingleBlogEdit = async (
@@ -36,36 +36,38 @@ const SingleBlogEdit = async (
   parent: ResolvingMetadata
 ) => {
   const { id } = await params;
-  const singleBlogDetails = await db.blog.findUnique({
+  const singleProjectDetails = await db.project.findUnique({
     where: {
       id,
     },
     include: {
-      BlogTagRelation: {
+      ProjectCategoryRelation: {
         where: {
-          blogId: id,
+          projectId: id,
         },
         include: {
-          blogCategory: true,
+          projectCategory: true,
         },
       },
     },
   });
 
-  if (!singleBlogDetails?.id) {
+  if (!singleProjectDetails?.id) {
     frontendErrorResponse({ message: `Blog not found` });
     return redirect("/");
   }
-  const blogCategoryIds =
-    singleBlogDetails?.BlogTagRelation?.map(
-      (relation) => relation.blogCategoryId
+  const projectCategoryIds =
+    singleProjectDetails?.ProjectCategoryRelation?.map(
+      (relation) => relation.projectCategoryId
     ) ?? [];
 
-  const category = await db.blogCategory.findMany({});
-  console.log({ blogCategoryIds, singleBlogDetails });
+  const category = await db.projectCategory.findMany({});
   return (
-    <SingleBlogEditClientComponent
-      singleBlogDetails={{ blogCategoryIds, ...singleBlogDetails }}
+    <SingleProjectEditClientComponent
+      singleProjectDetails={{
+        projectCategoryIds,
+        ...singleProjectDetails,
+      }}
       category={category}
     />
   );

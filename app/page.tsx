@@ -9,5 +9,23 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const allBlogs = await db.blog.findMany({});
-  return <HomeClientComponent blogs={allBlogs} />;
+  const categoriesWithCount = await db.blogCategory.findMany({
+    include: {
+      _count: {
+        select: {
+          BlogCategoryRelation: true,
+        },
+      },
+    },
+    take: 5,
+  });
+  const transformedCategories = categoriesWithCount.map((category) => ({
+    ...category,
+    count: category._count.BlogCategoryRelation, // Extract count from _count
+    _count: undefined, // Remove _count if needed
+  }));
+
+  return (
+    <HomeClientComponent categories={transformedCategories} blogs={allBlogs} />
+  );
 }

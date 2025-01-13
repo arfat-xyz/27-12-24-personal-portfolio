@@ -13,12 +13,18 @@ import {
   ChartOptions,
 } from "chart.js";
 import { useState } from "react";
-import { Blog, BlogStatus } from "@prisma/client";
+import { Blog, BlogCategory, BlogStatus } from "@prisma/client";
 
 type MonthlyData = {
   [year: number]: number[]; // A year maps to an array of monthly counts (12 months)
 };
-const HomeClientComponent = ({ blogs }: { blogs: Blog[] }) => {
+const HomeClientComponent = ({
+  blogs,
+  categories,
+}: {
+  blogs: Blog[];
+  categories: (BlogCategory & { count: number })[];
+}) => {
   ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -150,20 +156,53 @@ const HomeClientComponent = ({ blogs }: { blogs: Blog[] }) => {
             </div>
 
             <div className="blogscategory flex flex-center">
-              <table>
-                <thead>
+              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <td>Next Js</td>
-                    {/* <td>
-                      {
-                        blogs.filter((d) => d.blogCategory[0] === "Next js")
-                          .length
-                      }
-                    </td> */}
+                    <th scope="col" className="px-6 py-3">
+                      Name
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Count
+                    </th>
                   </tr>
                 </thead>
+                <tbody className="">
+                  {categories.map((cat) => (
+                    <tr
+                      key={cat.id}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                    >
+                      <td className="px-6 py-4">{cat.name}</td>
+                      <td className="px-6 py-4">{cat.count}</td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
+
+            {/* <table>
+                <thead className="block w-full">
+                  <tr>
+                    <td>Name</td>
+                    <td>Count</td>
+                  </tr>
+                </thead>
+                <tbody className="h-[500px] overflow-y-scroll block w-full">
+                  {categories.map((cat) => (
+                    <tr key={cat.id}>
+                      <td> {cat.name} </td>
+                      <td> {cat.count} </td>
+                    </tr>
+                  ))}
+                  {categories.map((cat) => (
+                    <tr key={cat.id}>
+                      <td> {cat.name} </td>
+                      <td> {cat.count} </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table> */}
           </div>
         </div>
       </div>

@@ -64,5 +64,12 @@
       " frontendErrorRespons${1:e}({message: ${2:e?.response?.data?.message},});"
     ],
     "description": "Creates an error response for frontend operations. Includes placeholders for the return keyword, the response handler name, and the error message."
+  },
+  "String Validation": {
+    "prefix": "sv",
+    "body": [
+      "stringValidatio${1:n}('${2:value}')"
+    ],
+    "description": "Validate string"
   }
 }

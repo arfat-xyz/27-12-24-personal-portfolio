@@ -1,14 +1,13 @@
 import { routeErrorHandler } from "@/lib/api-error-handler";
 import { formatErrorResponse, formatResponse } from "@/lib/api-response";
+import { deleteImages } from "@/lib/cloudinary";
 import { db } from "@/lib/db";
-import cloudinary from "cloudinary";
 import { blogPUTSchema } from "@/lib/validations/blogValidation";
 import {
   paramsSchema,
   routeBlogContextSchema,
 } from "@/lib/validations/id-context-schema";
 import { z } from "zod";
-import { deleteImages } from "@/lib/cloudinary";
 
 export async function PUT(
   req: Request,
@@ -92,6 +91,9 @@ export async function DELETE(
     if (!existingBlog?.id) return formatErrorResponse("Blog not found", 404);
     await deleteImages(existingBlog.images);
 
+    await db.blogCategoryRelation.deleteMany({
+      where: { id: blogId },
+    });
     const blogDoc = await db.blog.delete({
       where: {
         id: blogId,

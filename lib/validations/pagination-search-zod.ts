@@ -38,7 +38,11 @@ export const paginationSearchSchema = z.object({
  * @returns Prisma filter object for an OR search across the specified fields
  */
 export function generateSearchFilter<
-  T extends Prisma.BlogWhereInput | Prisma.BlogCategoryWhereInput
+  T extends
+    | Prisma.BlogWhereInput
+    | Prisma.BlogCategoryWhereInput
+    | Prisma.ProjectCategoryWhereInput
+    | Prisma.ProjectWhereInput
 >(fields: Array<keyof T>, query: string): T["OR"] {
   return fields.map((field) => ({
     [field]: {
@@ -62,4 +66,17 @@ export const paginationSearchForBlogSchema = paginationSearchSchema.extend({
 });
 export const paginationSearchForBlogTagsSchema = paginationSearchSchema.extend({
   name: z.string().optional(),
+});
+
+export const paginationSearchForProjectSchema = paginationSearchSchema.extend({
+  status: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || Object.values(BlogStatus).includes(val as BlogStatus),
+      {
+        message: "Invalid status value. Allowed values: Draft, Publish",
+      }
+    )
+    .default(BlogStatus.Publish), // Default value if none provided
 });

@@ -1,55 +1,23 @@
 "use client";
-import config from "@/lib/config";
-import { db } from "@/lib/db";
 import {
   frontendErrorResponse,
   frontendSuccessResponse,
 } from "@/lib/frontend-response-toast";
 import { imageConfig } from "@/lib/image-config";
-import { SingleProjectPageProps } from "@/types/server-page";
-import { Blog } from "@prisma/client";
+import { Project } from "@prisma/client";
 import axios from "axios";
-import { Metadata, ResolvingMetadata } from "next";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import BreadcrumbWithAdminPanel from "../breadcrumb-with-admin-panel";
-export async function generateMetadata(
-  { params }: SingleProjectPageProps,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const singleBlogDetails = await db.blog.findUnique({
-    where: {
-      id: params.id,
-    },
-    select: {
-      title: true,
-      description: true,
-    },
-  });
 
-  // optionally access and extend (rather than replace) parent metadata
-  const previousImages = (await parent).openGraph?.images || [];
-
-  return {
-    title: !singleBlogDetails
-      ? config.metadataDefaultTitle
-      : singleBlogDetails.title,
-    openGraph: {
-      images: [config.metadataDefaultImageLink, ...previousImages],
-    },
-    description: !singleBlogDetails
-      ? config.metadataDefaultDescription
-      : singleBlogDetails.title,
-  };
-}
-const DeleteSingleBlogClientComponent = ({ blog }: { blog: Blog }) => {
+const DeleteSingleProjectClientComponent = ({ project }: { project: Project }) => {
   const router = useRouter();
   function goBack() {
-    router.push("/blogs");
+    router.push("/projects");
   }
 
   async function deleteBlog() {
-    const response = await axios.delete("/api/blogs/" + blog.id);
+    const response = await axios.delete("/api/projects/" + project.id);
     console.log(response);
     if (!response?.data.success)
       return frontendErrorResponse({ message: response?.data?.message });
@@ -60,8 +28,8 @@ const DeleteSingleBlogClientComponent = ({ blog }: { blog: Blog }) => {
     <div className="blogpage">
       <BreadcrumbWithAdminPanel
         h2Title="Delete"
-        spanTitleOne={blog?.title}
-        spanTitleTwo="Delete Blog"
+        spanTitleOne={project?.title}
+        spanTitleTwo="Delete Project"
       />
       <div className="deletesec flex flex-center wh_100">
         <div className="deletecard">
@@ -90,4 +58,4 @@ const DeleteSingleBlogClientComponent = ({ blog }: { blog: Blog }) => {
   );
 };
 
-export default DeleteSingleBlogClientComponent;
+export default DeleteSingleProjectClientComponent;

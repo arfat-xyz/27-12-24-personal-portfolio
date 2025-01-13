@@ -1,6 +1,9 @@
 export interface IdProps {
   id: string;
 }
-export interface SingleBlogPageProps {
+export interface SingleProjectPageProps {
+  params: IdProps;
+}
+export interface SingleProjectPageProps {
   params: IdProps;
 }

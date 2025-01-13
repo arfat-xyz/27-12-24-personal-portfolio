@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { BsPostcard } from "react-icons/bs";
+import { GrGallery } from "react-icons/gr";
 import { IoHome } from "react-icons/io5";
 import { MdOutlineWorkOutline } from "react-icons/md";
 import { RiShoppingCart2Line } from "react-icons/ri";
-import { GrGallery } from "react-icons/gr";
 import { TiContacts } from "react-icons/ti";
-import { useState, useEffect } from "react";
 export default function Aside({
   asideOpen,
   handleAsideOpen,
@@ -94,10 +94,10 @@ export default function Aside({
                   <Link href={`/projects`}>
                     <li>All Projects</li>
                   </Link>
-                  <Link href={`/projects/draftprojects`}>
+                  <Link href={`/projects/draft`}>
                     <li>Draft Projects</li>
                   </Link>
-                  <Link href={`/addproject`}>
+                  <Link href={`/projects/add`}>
                     <li>Add Projects</li>
                   </Link>
                 </ul>

@@ -5,7 +5,11 @@ import {
 } from "@/lib/frontend-response-toast";
 import { stringValidation } from "@/lib/validations/combine-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BlogCategory, BlogStatus, Blog as PrsimaBLog } from "@prisma/client";
+import {
+  Project as PrismaProject,
+  ProjectCategory,
+  ProjectStatus,
+} from "@prisma/client";
 import axios from "axios";
 import { CldUploadWidget } from "next-cloudinary";
 import { useRouter } from "next/navigation";
@@ -22,10 +26,9 @@ import { ItemInterface, ReactSortable } from "react-sortablejs";
 import { z } from "zod";
 
 // Define the Zod schema for validation
-const blogSchema = z.object({
-  title: stringValidation("Title"),
+const ProjectSchema = z.object({
+  title: stringValidation("Title").nonempty("Title is required"),
   slug: stringValidation("Slug")
-    .nonempty("Slug is required")
     .transform(
       (value) =>
         value
@@ -37,18 +40,14 @@ const blogSchema = z.object({
       (value) => /^[a-z0-9-]+$/.test(value),
       "Slug can only contain lowercase letters, numbers, and hyphens"
     ),
-  blogCategory: z
-    .array(
-      z.object({
-        label: stringValidation("Label"),
-        value: stringValidation("Value"),
-      })
-    )
-    .nonempty("At least one category must be selected"),
-  images: z.array(stringValidation("Image")).optional(),
-  description: stringValidation("Description").nonempty(
-    "Blog content is required"
+  projectCategory: z.array(
+    z.object({
+      label: stringValidation("Project category label"),
+      value: stringValidation("Project category value"),
+    })
   ),
+  images: z.array(stringValidation("Image")).optional(),
+  description: z.string().nonempty("Blog content is required"),
   tags: z
     .array(
       z.object({
@@ -57,30 +56,29 @@ const blogSchema = z.object({
       })
     )
     .nonempty("At least one tag must be selected"),
-  status: z.nativeEnum(BlogStatus, {
-    invalid_type_error: "Invalid blog status",
+  status: z.nativeEnum(ProjectStatus, {
+    invalid_type_error: "Invalid project status",
     required_error: "Status is required",
   }),
 });
 
 // Infer the form data type from the Zod schema
-type BlogFormData = z.infer<typeof blogSchema>;
+type ProjectFormData = z.infer<typeof ProjectSchema>;
 const tagOptions = z.object({
-  label: z.string(),
-  value: z.string(),
+  label: stringValidation("Tag label"),
+  value: stringValidation("Tag value"),
 });
 
 type TagOptionsProps = z.infer<typeof tagOptions>;
-export default function Blog({
-  blog,
+export default function Project({
+  project,
   category,
 }: {
-  blog?: PrsimaBLog & { blogCategoryIds: string[] };
-  category: BlogCategory[];
+  project?: PrismaProject & { projectCategoryIds: string[] };
+  category: ProjectCategory[];
 }) {
   const [redirect, setRedirect] = useState(false);
-  const [images, setImages] = useState<string[]>(blog?.images ?? []);
-
+  const [images, setImages] = useState<string[]>(project?.images ?? []);
   const {
     register,
     handleSubmit,
@@ -90,25 +88,24 @@ export default function Blog({
     formState: { errors, isSubmitting },
     clearErrors,
     control,
-  } = useForm<BlogFormData>({
-    resolver: zodResolver(blogSchema),
+  } = useForm<ProjectFormData>({
+    resolver: zodResolver(ProjectSchema),
     defaultValues: {
-      title: blog?.title ?? "",
-      slug: blog?.slug ?? "",
-      // blogCategory: [],
-      blogCategory: blog?.blogCategoryIds.length
+      title: project?.title ?? "",
+      slug: project?.slug ?? "",
+      projectCategory: project?.projectCategoryIds.length
         ? category
-            .filter((cat) => blog?.blogCategoryIds.includes(cat.id)) // Filter categories with matching ids
+            .filter((cat) => project?.projectCategoryIds.includes(cat.id)) // Filter categories with matching ids
             .map((cat) => ({ label: cat.name, value: cat.id }))
         : [],
-      description: blog?.description ?? "",
-      tags: blog?.tags?.length
-        ? blog.tags.map((cat) => ({
+      description: project?.description ?? "",
+      tags: project?.tags?.length
+        ? project.tags.map((cat) => ({
             label: cat,
             value: cat,
           }))
         : [],
-      status: blog?.status ?? "Draft",
+      status: project?.status ?? "Draft",
     },
   });
   const [tagOptions, setTagOptions] = useState<TagOptionsProps[]>(
@@ -118,11 +115,11 @@ export default function Blog({
     }))
   );
   const router = useRouter();
-  const onSubmit = async (data: BlogFormData) => {
-    const { blogCategory, tags, ...others } = data;
-    const newBlogCategory = blogCategory.map((c) => c.value);
+  const onSubmit = async (data: ProjectFormData) => {
+    const { projectCategory, tags, ...others } = data;
+    const newProjectCategory = projectCategory.map((c) => c.value);
     const newtags = tags.map((c) => c.label);
-
+    console.log({ newtags, newProjectCategory });
     if (!images.length)
       return setError("images", {
         message: "Minimum one  image requied",
@@ -130,32 +127,32 @@ export default function Blog({
       });
     data.images = [...images];
     try {
-      if (blog?.id) {
+      if (project?.id) {
         await axios
-          .put(`/api/blogs/${blog?.id}`, {
+          .put(`/api/projects/${project?.id}`, {
             ...others,
-            blogCategory: newBlogCategory,
+            projectCategory: newProjectCategory,
             tags: newtags,
             images: [...images],
           })
           .then((res) => {
             frontendSuccessResponse({ message: res?.data?.message });
-            return router.push("/blogs");
+            return router.push("/projects");
           })
           .catch((e) =>
             frontendErrorResponse({ message: e?.response?.data?.message })
           );
       } else {
         await axios
-          .post(`/api/blogs`, {
+          .post(`/api/projects`, {
             ...others,
-            blogCategory: newBlogCategory,
+            projectCategory: newProjectCategory,
             tags: newtags,
             images: [...images],
           })
           .then((res) => {
             frontendSuccessResponse({ message: res?.data?.message });
-            return router.push("/blogs");
+            return router.push("/projects");
           })
           .catch((e) =>
             frontendErrorResponse({ message: e?.response?.data?.message })
@@ -169,7 +166,7 @@ export default function Blog({
 
   // Synchronize default tags with `tagOptions`
   useEffect(() => {
-    const initialTags = blog?.tags?.map((tag) => ({
+    const initialTags = project?.tags?.map((tag) => ({
       label: tag,
       value: tag,
     }));
@@ -177,7 +174,7 @@ export default function Blog({
     if (initialTags) {
       setTagOptions((prev) => [...new Set([...prev, ...initialTags])]);
     }
-  }, [blog, category]);
+  }, [project, category]);
   useEffect(() => {
     const slug = watch("slug"); // Get the current value of the slug field
 
@@ -307,7 +304,7 @@ export default function Blog({
             )}
           /> */}
           <Controller
-            name="blogCategory"
+            name="projectCategory"
             control={control}
             render={({ field }) => (
               <Select
@@ -323,8 +320,8 @@ export default function Blog({
               />
             )}
           />
-          {errors.blogCategory && (
-            <span className="form-error">{errors.blogCategory.message}</span>
+          {errors.projectCategory && (
+            <span className="form-error">{errors.projectCategory.message}</span>
           )}
         </div>
 
