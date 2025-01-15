@@ -28,6 +28,14 @@ import { z } from "zod";
 // Define the Zod schema for validation
 const ProjectSchema = z.object({
   title: stringValidation("Title").nonempty("Title is required"),
+  client: stringValidation("Client")
+    .url("Client must be an URL")
+    .optional()
+    .or(z.literal("")),
+  livePreview: stringValidation("Live Preview")
+    .url("Live Preview must be an URL")
+    .optional()
+    .or(z.literal("")),
   slug: stringValidation("Slug")
     .transform(
       (value) =>
@@ -47,7 +55,7 @@ const ProjectSchema = z.object({
     })
   ),
   images: z.array(stringValidation("Image")).optional(),
-  description: z.string().nonempty("Blog content is required"),
+  description: z.string().nonempty("Project content is required"),
   tags: z
     .array(
       z.object({
@@ -196,28 +204,6 @@ export default function Project({
     }
   }, [watch("slug")]);
 
-  // async function uploadImages(ev: { target: { files: unknown } }) {
-  //   const files = ev.target.files;
-  //   setIsUploading(true);
-  //   if (files?.length > 0) {
-  //     for (const file of files) {
-  //       const data = new FormData();
-  //       data.append("file", file);
-
-  //       //use the axios.post method and push the promise to the queue
-  //       uploadImagesQueue.push(
-  //         axios.post("/api/upload", data).then((res) => {
-  //           console.log(res.data);
-  //           setImages((prev) => [...prev, ...res?.data?.data?.link]);
-  //         })
-  //       );
-  //     }
-  //     await Promise.all(uploadImagesQueue);
-  //     setIsUploading(false);
-  //   } else {
-  //     toast.error("An error occure");
-  //   }
-  // }
   const updateImagesOrder = (images: string[]) => {
     setImages(images);
   };
@@ -243,6 +229,32 @@ export default function Project({
           />
           {errors.title && (
             <span className="form-error">{errors.title.message}</span>
+          )}
+        </div>
+        {/* blog client */}
+        <div className="w-100 flex flex-col flex-left mb-2">
+          <label htmlFor="client">Client link</label>
+          <input
+            type="text"
+            id="client"
+            placeholder="Enter client link"
+            {...register("client")}
+          />
+          {errors.client && (
+            <span className="form-error">{errors.client.message}</span>
+          )}
+        </div>
+        {/* blog Live Preview  */}
+        <div className="w-100 flex flex-col flex-left mb-2">
+          <label htmlFor="livePreview">Live Preview link</label>
+          <input
+            type="text"
+            id="livePreview"
+            placeholder="Enter Live Preview link"
+            {...register("livePreview")}
+          />
+          {errors.livePreview && (
+            <span className="form-error">{errors.livePreview.message}</span>
           )}
         </div>
 
@@ -403,7 +415,7 @@ export default function Project({
 
         {/* markdown description */}
         <div className="description w-100 flex flex-col flex-left mb-2">
-          <label htmlFor="description">Blog Content</label>
+          <label htmlFor="description">Project Content</label>
           <MarkdownEditor
             style={{
               width: "100%",

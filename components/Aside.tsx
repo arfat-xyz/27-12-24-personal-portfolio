@@ -99,6 +99,9 @@ export default function Aside({
                   </Link>
                   <Link href={`/projects/add`}>
                     <li>Add Projects</li>
+                  </Link>{" "}
+                  <Link href={`/projects/category`}>
+                    <li>All Category</li>
                   </Link>
                 </ul>
               </>

@@ -10,9 +10,9 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import BreadcrumbWithAdminPanel from "../breadcrumb-with-admin-panel";
 import Dataloading from "../Dataloading";
 import DeleteModalComponent from "../delete-modal-component";
-import AddAndEditComponent from "./add-and-edit-component";
+import ProjectCategoryAddAndEditComponent from "./project-category-add-and-edit-component";
 
-const CategoryPageClientComponent = () => {
+const ProjectCategoryPageClientComponent = () => {
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(10);
@@ -36,7 +36,7 @@ const CategoryPageClientComponent = () => {
       try {
         setIsLoading(true);
         const res = await axios.get(
-          `/api/blog-category?q=${searchQuery}&page=${currentPage}&limit=${perPage}`
+          `/api/projects-category?q=${searchQuery}&page=${currentPage}&limit=${perPage}`
         );
         const returnData = res?.data?.data;
         setAllData(returnData.result);
@@ -55,7 +55,7 @@ const CategoryPageClientComponent = () => {
 
   const handleDeleteFunc = async (id: string) => {
     await axios
-      .delete(`/api/blog-category/${id}`)
+      .delete(`/api/projects-category/${id}`)
       .then((res) => {
         frontendSuccessResponse({ message: res?.data?.message });
         setIsDeleteModalOpen(false); // Close the modal after submission
@@ -70,13 +70,13 @@ const CategoryPageClientComponent = () => {
     <div className="blogpage">
       <BreadcrumbWithAdminPanel
         h2Title=" All Published "
-        spanTitleOne={`Blogs`}
-        spanTitleTwo="Blogs"
+        spanTitleOne={`Projects`}
+        spanTitleTwo="Projects"
       />
       <div className="blogstable">
         <div className="flex justify-between">
           <div className="flex gap-2 mb-1">
-            <h2>Search Blogs:</h2>
+            <h2>Search Projects:</h2>
             <input
               type="text"
               value={searchQuery}
@@ -85,7 +85,7 @@ const CategoryPageClientComponent = () => {
             />
           </div>
           <div className="">
-            <AddAndEditComponent setReloadData={setReloadData} />
+            <ProjectCategoryAddAndEditComponent setReloadData={setReloadData} />
           </div>
         </div>
         <table className="table table-styling">
@@ -120,7 +120,7 @@ const CategoryPageClientComponent = () => {
                   </td>
                   <td>
                     <div className="flex gap-2 flex-center">
-                      <AddAndEditComponent
+                      <ProjectCategoryAddAndEditComponent
                         category={category}
                         setReloadData={setReloadData}
                       />
@@ -148,4 +148,4 @@ const CategoryPageClientComponent = () => {
   );
 };
 
-export default CategoryPageClientComponent;
+export default ProjectCategoryPageClientComponent;

@@ -1,19 +1,19 @@
 "use client";
 import BreadcrumbWithAdminPanel from "@/components/breadcrumb-with-admin-panel";
 import FourCardComponent from "@/components/four-card-component";
-import { Bar } from "react-chartjs-2";
+import { Blog, BlogCategory, BlogStatus, Project } from "@prisma/client";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  ChartOptions,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
-  ChartOptions,
 } from "chart.js";
 import { useState } from "react";
-import { Blog, BlogCategory, BlogStatus } from "@prisma/client";
+import { Bar } from "react-chartjs-2";
 
 type MonthlyData = {
   [year: number]: number[]; // A year maps to an array of monthly counts (12 months)
@@ -21,9 +21,11 @@ type MonthlyData = {
 const HomeClientComponent = ({
   blogs,
   categories,
+  projects,
 }: {
   blogs: Blog[];
   categories: (BlogCategory & { count: number })[];
+  projects: Project[];
 }) => {
   ChartJS.register(
     CategoryScale,
@@ -98,7 +100,11 @@ const HomeClientComponent = ({
       heading: "Total Blogs",
       count: blogs.filter((blog) => blog.status === BlogStatus.Publish).length,
     },
-    { heading: "Total Projects", count: 5 },
+    {
+      heading: "Total Projects",
+      count: projects.filter((blog) => blog.status === BlogStatus.Publish)
+        .length,
+    },
     { heading: "Total Products", count: 5 },
     { heading: "Total Photos", count: 5 },
   ];
