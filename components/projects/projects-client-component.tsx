@@ -33,7 +33,7 @@ const ProjectsClientComponent = () => {
       console.log({ hasdf: "asdf" });
       try {
         const res = await axios.get(
-          `/api/projects?q=${searchQuery}&page=${currentPage}&limit=${perPage}`
+          `/api/projects?q=${searchQuery}&page=${currentPage}&limit=${perPage}`,
         );
         const returnData = res?.data?.data;
         setAllData(returnData.result);
@@ -67,7 +67,7 @@ const ProjectsClientComponent = () => {
         spanTitleTwo="Projects"
       />
       <div className="blogstable">
-        <div className="flex gap-2 mb-1">
+        <div className="mb-1 flex gap-2">
           <h2>Search Projects:</h2>
           <input
             type="text"
@@ -76,7 +76,7 @@ const ProjectsClientComponent = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <table className="table table-styling">
+        <table className="table-styling table">
           <thead>
             <tr>
               <th>#</th>
@@ -112,7 +112,7 @@ const ProjectsClientComponent = () => {
                     <h3>{project.title}</h3>
                   </td>
                   <td>
-                    <div className="flex gap-2 flex-center">
+                    <div className="flex-center flex gap-2">
                       <Link href={`/projects/edit/${project.id}`}>
                         <button>
                           <FaEdit />

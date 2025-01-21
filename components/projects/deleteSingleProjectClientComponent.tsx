@@ -10,7 +10,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import BreadcrumbWithAdminPanel from "../breadcrumb-with-admin-panel";
 
-const DeleteSingleProjectClientComponent = ({ project }: { project: Project }) => {
+const DeleteSingleProjectClientComponent = ({
+  project,
+}: {
+  project: Project;
+}) => {
   const router = useRouter();
   function goBack() {
     router.push("/projects");
@@ -31,7 +35,7 @@ const DeleteSingleProjectClientComponent = ({ project }: { project: Project }) =
         spanTitleOne={project?.title}
         spanTitleTwo="Delete Project"
       />
-      <div className="deletesec flex flex-center wh_100">
+      <div className="deletesec flex-center wh_100 flex">
         <div className="deletecard">
           <Image
             width={100}

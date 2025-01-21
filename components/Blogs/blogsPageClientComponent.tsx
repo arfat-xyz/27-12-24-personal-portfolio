@@ -34,7 +34,7 @@ const BlogsPageClientComponent = () => {
       console.log({ hasdf: "asdf" });
       try {
         const res = await axios.get(
-          `/api/blogs?q=${searchQuery}&page=${currentPage}&limit=${perPage}`
+          `/api/blogs?q=${searchQuery}&page=${currentPage}&limit=${perPage}`,
         );
         const returnData = res?.data?.data;
         setAllData(returnData.result);
@@ -68,7 +68,7 @@ const BlogsPageClientComponent = () => {
         spanTitleTwo="Blogs"
       />
       <div className="blogstable">
-        <div className="flex gap-2 mb-1">
+        <div className="mb-1 flex gap-2">
           <h2>Search Blogs:</h2>
           <input
             type="text"
@@ -77,7 +77,7 @@ const BlogsPageClientComponent = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <table className="table table-styling">
+        <table className="table-styling table">
           <thead>
             <tr>
               <th>#</th>
@@ -112,7 +112,7 @@ const BlogsPageClientComponent = () => {
                     <h3>{blog.title}</h3>
                   </td>
                   <td>
-                    <div className="flex gap-2 flex-center">
+                    <div className="flex-center flex gap-2">
                       <Link href={`/blogs/edit/${blog.id}`}>
                         <button>
                           <FaEdit />

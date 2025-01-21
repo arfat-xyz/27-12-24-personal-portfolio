@@ -19,10 +19,10 @@ const DeleteModalComponent = ({
         {buttontext}
       </button>
       {isOpen ? (
-        <div className="absolute top-0 left-0 w-full h-full backdrop-blur-sm flex justify-center items-center">
-          <div className="w-96 bg-white shadow-md rounded-lg  p-3 ">
+        <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center backdrop-blur-sm">
+          <div className="w-96 rounded-lg bg-white p-3 shadow-md">
             <h4 className="text-2xl font-medium">{modalHeading}</h4>
-            <div className="w-full flex justify-end gap-2 mt-2">
+            <div className="mt-2 flex w-full justify-end gap-2">
               <button className="" onClick={() => setIsOpen(false)}>
                 Cancel
               </button>

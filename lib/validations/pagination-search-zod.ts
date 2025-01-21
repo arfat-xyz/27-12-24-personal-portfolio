@@ -43,6 +43,7 @@ export function generateSearchFilter<
     | Prisma.BlogCategoryWhereInput
     | Prisma.ProjectCategoryWhereInput
     | Prisma.ProjectWhereInput
+    | Prisma.PhotoWhereInput
 >(fields: Array<keyof T>, query: string): T["OR"] {
   return fields.map((field) => ({
     [field]: {

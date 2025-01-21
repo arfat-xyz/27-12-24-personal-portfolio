@@ -45,8 +45,8 @@ export default function Aside({
           <li
             className={
               activeLink === "/blogs"
-                ? "navActive flex-col flex-left"
-                : "navactive flex-col flex-left"
+                ? "navActive flex-left flex-col"
+                : "navactive flex-left flex-col"
             }
             onClick={() => handleLinkClick("/blogs")}
           >
@@ -79,8 +79,8 @@ export default function Aside({
           <li
             className={
               activeLink === "/projects"
-                ? "navActive flex-col flex-left"
-                : "navactive flex-col flex-left"
+                ? "navActive flex-left flex-col"
+                : "navactive flex-left flex-col"
             }
             onClick={() => handleLinkClick("/projects")}
           >
@@ -113,8 +113,8 @@ export default function Aside({
           <li
             className={
               activeLink === "/shop"
-                ? "navActive flex-col flex-left"
-                : "navactive flex-col flex-left"
+                ? "navActive flex-left flex-col"
+                : "navactive flex-left flex-col"
             }
             onClick={() => handleLinkClick("/shop")}
           >
@@ -144,8 +144,8 @@ export default function Aside({
           <li
             className={
               activeLink === "/gallery"
-                ? "navActive flex-col flex-left"
-                : "navactive flex-col flex-left"
+                ? "navActive flex-left flex-col"
+                : "navactive flex-left flex-col"
             }
             onClick={() => handleLinkClick("/gallery")}
           >
@@ -160,7 +160,7 @@ export default function Aside({
                     <li>All Photos</li>
                   </Link>
 
-                  <Link href={`/gallery/addphoto`}>
+                  <Link href={`/gallery/add`}>
                     <li>Add Photo</li>
                   </Link>
                 </ul>

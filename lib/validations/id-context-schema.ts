@@ -14,7 +14,6 @@ export const paramsProjectIdSchema = z.object({
   }),
 });
 
-
 export const categoryIdSchema = z.object({
   id: z.string({
     invalid_type_error: "Category id must be a string",
@@ -28,9 +27,11 @@ export const routeBlogContextSchema = z.object({
 export const routeCateogoryContextSchema = z.object({
   params: categoryIdSchema, // Reuse the paramsSchema here
 });
-export const idSchema = z.object({
-  id: z.string({
-    invalid_type_error: "Blog must be a string",
-    required_error: "Blog id is required",
-  }),
-});
+export const idSchema = (fieldName: string = "Blog id") => {
+  return z.object({
+    id: z.string({
+      invalid_type_error: `${fieldName} must be a string`,
+      required_error: `${fieldName} is required`,
+    }),
+  });
+};

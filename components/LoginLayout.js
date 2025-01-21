@@ -1,8 +1,1 @@
-
-
-
-export default function LoginLayout() {
-
-    
-
-}
+export default function LoginLayout() {}

@@ -11,7 +11,7 @@ const BreadcrumbWithAdminPanel = ({
   spanTitleTwo: string;
 }) => {
   return (
-    <div className="titledashboard flex flex-sb">
+    <div className="titledashboard flex-sb flex">
       <div className="">
         <h2>
           {h2Title} <span>{spanTitleOne}</span>

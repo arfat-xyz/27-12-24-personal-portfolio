@@ -42,17 +42,17 @@ const ProjectSchema = z.object({
         value
           .trim()
           .replace(/\s+/g, "-") // Replace spaces with hyphens
-          .replace(/[^a-z0-9-]/g, "") // Remove invalid characters
+          .replace(/[^a-z0-9-]/g, ""), // Remove invalid characters
     )
     .refine(
       (value) => /^[a-z0-9-]+$/.test(value),
-      "Slug can only contain lowercase letters, numbers, and hyphens"
+      "Slug can only contain lowercase letters, numbers, and hyphens",
     ),
   projectCategory: z.array(
     z.object({
       label: stringValidation("Project category label"),
       value: stringValidation("Project category value"),
-    })
+    }),
   ),
   images: z.array(stringValidation("Image")).optional(),
   description: z.string().nonempty("Project content is required"),
@@ -61,7 +61,7 @@ const ProjectSchema = z.object({
       z.object({
         label: stringValidation("Tag label"),
         value: stringValidation("Tag value"),
-      })
+      }),
     )
     .nonempty("At least one tag must be selected"),
   status: z.nativeEnum(ProjectStatus, {
@@ -120,7 +120,7 @@ export default function Project({
     category.map((cat) => ({
       label: cat.name,
       value: cat.id,
-    }))
+    })),
   );
   const router = useRouter();
   const onSubmit = async (data: ProjectFormData) => {
@@ -148,7 +148,7 @@ export default function Project({
             return router.push("/projects");
           })
           .catch((e) =>
-            frontendErrorResponse({ message: e?.response?.data?.message })
+            frontendErrorResponse({ message: e?.response?.data?.message }),
           );
       } else {
         await axios
@@ -163,7 +163,7 @@ export default function Project({
             return router.push("/projects");
           })
           .catch((e) =>
-            frontendErrorResponse({ message: e?.response?.data?.message })
+            frontendErrorResponse({ message: e?.response?.data?.message }),
           );
       }
       setRedirect(true);
@@ -219,7 +219,7 @@ export default function Project({
     <>
       <form className="addWebsiteform" onSubmit={handleSubmit(onSubmit)}>
         {/* blog title */}
-        <div className="w-100 flex flex-col flex-left mb-2">
+        <div className="w-100 flex-left mb-2 flex flex-col">
           <label htmlFor="title">Title</label>
           <input
             type="text"
@@ -232,7 +232,7 @@ export default function Project({
           )}
         </div>
         {/* blog client */}
-        <div className="w-100 flex flex-col flex-left mb-2">
+        <div className="w-100 flex-left mb-2 flex flex-col">
           <label htmlFor="client">Client link</label>
           <input
             type="text"
@@ -245,7 +245,7 @@ export default function Project({
           )}
         </div>
         {/* blog Live Preview  */}
-        <div className="w-100 flex flex-col flex-left mb-2">
+        <div className="w-100 flex-left mb-2 flex flex-col">
           <label htmlFor="livePreview">Live Preview link</label>
           <input
             type="text"
@@ -259,7 +259,7 @@ export default function Project({
         </div>
 
         {/* blog slug */}
-        <div className="w-100 flex flex-col flex-left mb-2">
+        <div className="w-100 flex-left mb-2 flex flex-col">
           <label htmlFor="slug">Slug (SEO friendly URL)</label>
           <input
             type="text"
@@ -273,7 +273,7 @@ export default function Project({
         </div>
 
         {/* blog category */}
-        <div className="w-100 flex flex-col flex-left mb-2">
+        <div className="w-100 flex-left mb-2 flex flex-col">
           <label htmlFor="category">Select Category</label>
           {/* <select id="category" multiple {...register("blogCategory")}>
             <option value="Node js">Node js</option>
@@ -338,7 +338,7 @@ export default function Project({
         </div>
 
         {/* blog images */}
-        <div className="w-100 flex flex-col flex-left mb-2">
+        <div className="w-100 flex-left mb-2 flex flex-col">
           <div className="w-100">
             {/* <label htmlFor="images">Images</label>
             <input
@@ -414,7 +414,7 @@ export default function Project({
         )}
 
         {/* markdown description */}
-        <div className="description w-100 flex flex-col flex-left mb-2">
+        <div className="description w-100 flex-left mb-2 flex flex-col">
           <label htmlFor="description">Project Content</label>
           <MarkdownEditor
             style={{
@@ -431,7 +431,7 @@ export default function Project({
         </div>
 
         {/* tags */}
-        <div className="w-100 flex flex-col flex-left mb-2">
+        <div className="w-100 flex-left mb-2 flex flex-col">
           <label htmlFor="tags">Tags</label>
           {/* <select id="tags" multiple {...register("tags")}>
             <option value="html">html</option>
@@ -481,7 +481,7 @@ export default function Project({
         </div>
 
         {/* blog status */}
-        <div className="w-100 flex flex-col flex-left mb-2">
+        <div className="w-100 flex-left mb-2 flex flex-col">
           <label htmlFor="status">Status</label>
           <select id="status" {...register("status")}>
             <option value="">No select</option>

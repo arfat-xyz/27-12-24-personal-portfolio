@@ -1,24 +1,23 @@
 "use client";
+
 import { frontendErrorResponse } from "@/lib/frontend-response-toast";
-import { Blog } from "@prisma/client";
+import { Photo } from "@prisma/client";
+import axios from "axios";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { SiBloglovin } from "react-icons/si";
-import Dataloading from "../Dataloading";
-import Link from "next/link";
 import BreadcrumbWithAdminPanel from "../breadcrumb-with-admin-panel";
+import Dataloading from "../Dataloading";
 
-const BlogDraftPageClientComponent = () => {
-  //pagination
+const GalleryPageClientComponent = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(2);
+  const [perPage] = useState(10);
 
   //search
   const [searchQuery, setSearchQuery] = useState(``);
   const [totalPage, setTotalPage] = useState(1);
-  const [allData, setAllData] = useState<Blog[]>([]);
+  const [allData, setAllData] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(false);
   useEffect(() => {
@@ -34,7 +33,7 @@ const BlogDraftPageClientComponent = () => {
       console.log({ hasdf: "asdf" });
       try {
         const res = await axios.get(
-          `/api/blogs?q=${searchQuery}&page=${currentPage}&limit=${perPage}&status=Draft`,
+          `/api/gallery?q=${searchQuery}&page=${currentPage}&limit=${perPage}`,
         );
         const returnData = res?.data?.data;
         setAllData(returnData.result);
@@ -48,7 +47,6 @@ const BlogDraftPageClientComponent = () => {
     fetchAllData();
   }, [searchQuery, currentPage]);
 
-  console.log({ allData, totalPage });
   // function to handle page change
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -63,13 +61,13 @@ const BlogDraftPageClientComponent = () => {
   return (
     <div className="blogpage">
       <BreadcrumbWithAdminPanel
-        h2Title="All Draft "
-        spanTitleOne={`Blogs`}
-        spanTitleTwo="Blogs"
+        h2Title=" All Published "
+        spanTitleOne={`Gallery`}
+        spanTitleTwo="Gallery"
       />
       <div className="blogstable">
         <div className="mb-1 flex gap-2">
-          <h2>Search Blogs:</h2>
+          <h2>Search Gallery:</h2>
           <input
             type="text"
             value={searchQuery}
@@ -102,23 +100,23 @@ const BlogDraftPageClientComponent = () => {
                 </td>
               </tr>
             ) : (
-              allData.map((blog, index) => (
-                <tr key={blog?.id}>
+              allData.map((gallery, index) => (
+                <tr key={gallery?.id}>
                   <td>{indexOfFirstBlog + index + 1}</td>
                   <td>
-                    <img src={blog.images[0]} width={180} alt="image" />
+                    <img src={gallery.images[0]} width={180} alt="image" />
                   </td>
                   <td>
-                    <h3>{blog.title}</h3>
+                    <h3>{gallery.title}</h3>
                   </td>
                   <td>
                     <div className="flex-center flex gap-2">
-                      <Link href={`/blogs/edit/${blog.id}`}>
+                      <Link href={`/gallery/edit/${gallery.id}`}>
                         <button>
                           <FaEdit />
                         </button>
                       </Link>
-                      <Link href={`/blogs/delete/${blog.id}`}>
+                      <Link href={`/gallery/delete/${gallery.id}`}>
                         <button>
                           <RiDeleteBin6Fill />
                         </button>
@@ -135,4 +133,4 @@ const BlogDraftPageClientComponent = () => {
   );
 };
 
-export default BlogDraftPageClientComponent;
+export default GalleryPageClientComponent;

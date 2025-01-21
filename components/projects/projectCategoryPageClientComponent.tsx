@@ -36,7 +36,7 @@ const ProjectCategoryPageClientComponent = () => {
       try {
         setIsLoading(true);
         const res = await axios.get(
-          `/api/projects-category?q=${searchQuery}&page=${currentPage}&limit=${perPage}`
+          `/api/projects-category?q=${searchQuery}&page=${currentPage}&limit=${perPage}`,
         );
         const returnData = res?.data?.data;
         setAllData(returnData.result);
@@ -62,7 +62,7 @@ const ProjectCategoryPageClientComponent = () => {
         setReloadData(true);
       })
       .catch((e) =>
-        frontendErrorResponse({ message: e?.response?.data?.message })
+        frontendErrorResponse({ message: e?.response?.data?.message }),
       );
   };
   console.log({ allData, currentPage, totalPage });
@@ -75,7 +75,7 @@ const ProjectCategoryPageClientComponent = () => {
       />
       <div className="blogstable">
         <div className="flex justify-between">
-          <div className="flex gap-2 mb-1">
+          <div className="mb-1 flex gap-2">
             <h2>Search Projects:</h2>
             <input
               type="text"
@@ -88,7 +88,7 @@ const ProjectCategoryPageClientComponent = () => {
             <ProjectCategoryAddAndEditComponent setReloadData={setReloadData} />
           </div>
         </div>
-        <table className="table table-styling">
+        <table className="table-styling table">
           <thead>
             <tr>
               <th>#</th>
@@ -119,7 +119,7 @@ const ProjectCategoryPageClientComponent = () => {
                     <h3>{category.name}</h3>
                   </td>
                   <td>
-                    <div className="flex gap-2 flex-center">
+                    <div className="flex-center flex gap-2">
                       <ProjectCategoryAddAndEditComponent
                         category={category}
                         setReloadData={setReloadData}

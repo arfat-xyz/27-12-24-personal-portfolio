@@ -1,6 +1,3 @@
-
-
 export default function Aos() {
-  
-    return <div></div>
+  return <div></div>;
 }

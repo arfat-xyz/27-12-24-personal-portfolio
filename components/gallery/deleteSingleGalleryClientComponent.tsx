@@ -7,7 +7,7 @@ import {
 } from "@/lib/frontend-response-toast";
 import { imageConfig } from "@/lib/image-config";
 import { SingleProjectPageProps } from "@/types/server-page";
-import { Blog } from "@prisma/client";
+import { Photo } from "@prisma/client";
 import axios from "axios";
 import { Metadata, ResolvingMetadata } from "next";
 import Image from "next/image";
@@ -17,13 +17,12 @@ export async function generateMetadata(
   { params }: SingleProjectPageProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const singleBlogDetails = await db.blog.findUnique({
+  const singleGalleryDetails = await db.photo.findUnique({
     where: {
       id: params.id,
     },
     select: {
       title: true,
-      description: true,
     },
   });
 
@@ -31,25 +30,29 @@ export async function generateMetadata(
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: !singleBlogDetails
+    title: !singleGalleryDetails
       ? config.metadataDefaultTitle
-      : singleBlogDetails.title,
+      : singleGalleryDetails.title,
     openGraph: {
       images: [config.metadataDefaultImageLink, ...previousImages],
     },
-    description: !singleBlogDetails
+    description: !singleGalleryDetails
       ? config.metadataDefaultDescription
-      : singleBlogDetails.title,
+      : singleGalleryDetails.title,
   };
 }
-const DeleteSingleBlogClientComponent = ({ blog }: { blog: Blog }) => {
+const DeleteSingleGalleryClientComponent = ({
+  gallery,
+}: {
+  gallery: Photo;
+}) => {
   const router = useRouter();
   function goBack() {
-    router.push("/blogs");
+    router.push("/gallery");
   }
 
-  async function deleteBlog() {
-    const response = await axios.delete("/api/blogs/" + blog.id);
+  async function deleteGallery() {
+    const response = await axios.delete("/api/gallery/" + gallery.id);
     console.log(response);
     if (!response?.data.success)
       return frontendErrorResponse({ message: response?.data?.message });
@@ -60,8 +63,8 @@ const DeleteSingleBlogClientComponent = ({ blog }: { blog: Blog }) => {
     <div className="blogpage">
       <BreadcrumbWithAdminPanel
         h2Title="Delete"
-        spanTitleOne={blog?.title}
-        spanTitleTwo="Delete Blog"
+        spanTitleOne={gallery?.title}
+        spanTitleTwo="Delete Gallery"
       />
       <div className="deletesec flex-center wh_100 flex">
         <div className="deletecard">
@@ -77,7 +80,7 @@ const DeleteSingleBlogClientComponent = ({ blog }: { blog: Blog }) => {
             content.
           </p>
           <div className="buttonContainer">
-            <button onClick={deleteBlog} className="acceptButton">
+            <button onClick={deleteGallery} className="acceptButton">
               Delete
             </button>
             <button className="declineButton" onClick={goBack}>
@@ -90,4 +93,4 @@ const DeleteSingleBlogClientComponent = ({ blog }: { blog: Blog }) => {
   );
 };
 
-export default DeleteSingleBlogClientComponent;
+export default DeleteSingleGalleryClientComponent;

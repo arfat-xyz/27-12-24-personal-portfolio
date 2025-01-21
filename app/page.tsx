@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 export default async function Home() {
   const allBlogs = await db.blog.findMany({});
   const allProjects = await db.project.findMany({});
+  const allGallery = await db.photo.findMany({});
   const categoriesWithCount = await db.blogCategory.findMany({
     include: {
       _count: {
@@ -31,6 +32,7 @@ export default async function Home() {
       categories={transformedCategories}
       blogs={allBlogs}
       projects={allProjects}
+      gallery={allGallery}
     />
   );
 }

@@ -85,6 +85,15 @@ model Project {
   ProjectCategoryRelation ProjectCategoryRelation[] @relation("Project")
 }
 
+model Photo {
+  id        String   @id @default(cuid()) @map("_id")
+  slug      String
+  title     String
+  images    String[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+}
+
 model ProjectCategory {
   id        String   @id @default(cuid()) @map("_id")
   name      String   @unique

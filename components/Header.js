@@ -16,10 +16,10 @@ export default function Header({ handleAsideOpen }) {
   };
   return (
     <>
-      <header className="header flex flex-sb">
+      <header className="header flex-sb flex">
         <div className="logo flex gap-2">
           <h1>ADMIN</h1>
-          <div className="headerham flex flex-center" onClick={handleAsideOpen}>
+          <div className="headerham flex-center flex" onClick={handleAsideOpen}>
             <RiBarChartHorizontalLine />
           </div>
         </div>

@@ -51,7 +51,7 @@ const AddAndEditComponent = ({
             reset();
           })
           .catch((e) =>
-            frontendErrorResponse({ message: e?.response?.data?.message })
+            frontendErrorResponse({ message: e?.response?.data?.message }),
           );
       } else {
         await axios
@@ -63,7 +63,7 @@ const AddAndEditComponent = ({
             reset();
           })
           .catch((e) =>
-            frontendErrorResponse({ message: e?.response?.data?.message })
+            frontendErrorResponse({ message: e?.response?.data?.message }),
           );
       }
     } catch (error) {
@@ -79,13 +79,13 @@ const AddAndEditComponent = ({
         category?.id ? (
           <FaEdit />
         ) : (
-          <GrAddCircle className="size-5 hover:rotate-90 transition-all duration-300" />
+          <GrAddCircle className="size-5 transition-all duration-300 hover:rotate-90" />
         )
       }
       insideComponent={
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-full flex flex-col px-3"
+          className="flex w-full flex-col px-3"
         >
           <input
             type="text"
@@ -94,10 +94,10 @@ const AddAndEditComponent = ({
             {...register("name")}
           />
           {errors.name && (
-            <span className="text-red-500 text-sm">{errors.name.message}</span>
+            <span className="text-sm text-red-500">{errors.name.message}</span>
           )}
-          <div className="w-full flex justify-end mt-1">
-            <button type="submit" className="h-8 text-sm rounded-md">
+          <div className="mt-1 flex w-full justify-end">
+            <button type="submit" className="h-8 rounded-md text-sm">
               Submit
             </button>
           </div>

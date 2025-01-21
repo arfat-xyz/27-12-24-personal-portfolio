@@ -1,7 +1,7 @@
 "use client";
 import BreadcrumbWithAdminPanel from "@/components/breadcrumb-with-admin-panel";
 import FourCardComponent from "@/components/four-card-component";
-import { Blog, BlogCategory, BlogStatus, Project } from "@prisma/client";
+import { Blog, BlogCategory, BlogStatus, Photo, Project } from "@prisma/client";
 import {
   BarElement,
   CategoryScale,
@@ -22,10 +22,12 @@ const HomeClientComponent = ({
   blogs,
   categories,
   projects,
+  gallery,
 }: {
   blogs: Blog[];
   categories: (BlogCategory & { count: number })[];
   projects: Project[];
+  gallery: Photo[];
 }) => {
   ChartJS.register(
     CategoryScale,
@@ -33,7 +35,7 @@ const HomeClientComponent = ({
     BarElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
   );
   const [blogData, setBlogData] = useState([]);
   const [projectData, setProjectData] = useState([]);
@@ -87,7 +89,7 @@ const HomeClientComponent = ({
     label: year.toString(), // Convert year to string, if necessary
     data: monthlyData[+year] || Array(12).fill(0), // Convert string to number with `+year`
     backgroundColor: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
-      Math.random() * 256
+      Math.random() * 256,
     )}, ${Math.floor(Math.random() * 256)})`,
   }));
 
@@ -106,7 +108,7 @@ const HomeClientComponent = ({
         .length,
     },
     { heading: "Total Products", count: 5 },
-    { heading: "Total Photos", count: 5 },
+    { heading: "Total Photos", count: gallery.length },
   ];
   return (
     <>
@@ -119,7 +121,7 @@ const HomeClientComponent = ({
           spanTitleTwo="Addblog"
         />
         {/* dashboard four cards */}
-        <div className="topfourcards flex flex-sb">
+        <div className="topfourcards flex-sb flex">
           {cardsArr.map((card, i) => (
             <FourCardComponent
               key={i}
@@ -129,9 +131,9 @@ const HomeClientComponent = ({
           ))}
         </div>
         {/* year overview */}
-        <div className="year_overview flex flex-sb">
+        <div className="year_overview flex-sb flex">
           <div className="leftyearoverview">
-            <div className="flex flex-sb">
+            <div className="flex-sb flex">
               <h3>Year Overview</h3>
               <ul className="creative-dots">
                 <li className="big-dot"></li>
@@ -161,9 +163,9 @@ const HomeClientComponent = ({
               </ul>
             </div>
 
-            <div className="blogscategory flex flex-center">
-              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <div className="blogscategory flex-center flex">
+              <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">
                       Name
@@ -177,7 +179,7 @@ const HomeClientComponent = ({
                   {categories.map((cat) => (
                     <tr
                       key={cat.id}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
                     >
                       <td className="px-6 py-4">{cat.name}</td>
                       <td className="px-6 py-4">{cat.count}</td>

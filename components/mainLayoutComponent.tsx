@@ -16,7 +16,7 @@ const MainLayoutComponent = ({ children }: { children: ReactNode }) => {
           className={
             asideOpen
               ? `container max-w-[calc(100%-200px)]`
-              : `container active`
+              : `active container`
           }
         >
           {/* <Component {...pageProps} /> */}

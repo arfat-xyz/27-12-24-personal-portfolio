@@ -2,6 +2,8 @@ const config = {
   mongodbURI: process.env.DATABASE_URL,
   nextAuthURL: process.env.NEXTAUTH_URL,
   nextAuthSecret: process.env.NEXTAUTH_SECRET,
+  githubId: process.env.GITHUB_ID,
+  githubSecret: process.env.GITHUB_SECRET,
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
