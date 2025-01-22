@@ -16,7 +16,7 @@ export default function Aside({
 }) {
   const pathname = usePathname();
   const [clicked, setClicked] = useState(false);
-  const [activeLink, setActiveLink] = useState<string | null>("/");
+  const [activeLink, setActiveLink] = useState<string | null>("/dashboard");
   const handleClick = () => {
     setClicked(!clicked);
   };
@@ -34,7 +34,7 @@ export default function Aside({
     <>
       <aside className={asideOpen ? "asideleft active" : "asideleft"}>
         <ul>
-          <Link href={`/`}>
+          <Link href={`/dashboard`}>
             <li className="navactive">
               <IoHome />
               <span>Dashboard</span>
@@ -44,29 +44,29 @@ export default function Aside({
           {/* Blogs menu */}
           <li
             className={
-              activeLink === "/blogs"
+              activeLink === "/dashboard/blogs"
                 ? "navActive flex-left flex-col"
                 : "navactive flex-left flex-col"
             }
-            onClick={() => handleLinkClick("/blogs")}
+            onClick={() => handleLinkClick("/dashboard/blogs")}
           >
             <div className="flex gap-1">
               <BsPostcard />
               <span>Blogs</span>
             </div>
-            {activeLink === "/blogs" ? (
+            {activeLink === "/dashboard/blogs" ? (
               <>
                 <ul>
-                  <Link href={`/blogs`}>
+                  <Link href={`/dashboard/blogs`}>
                     <li>All Blogs</li>
                   </Link>
-                  <Link href={`/blogs/draft`}>
+                  <Link href={`/dashboard/blogs/draft`}>
                     <li>Draft Blogs</li>
                   </Link>
-                  <Link href={`/blogs/addblog`}>
+                  <Link href={`/dashboard/blogs/addblog`}>
                     <li>Add Blog</li>
                   </Link>
-                  <Link href={`/blogs/category`}>
+                  <Link href={`/dashboard/blogs/category`}>
                     <li>All Category</li>
                   </Link>
                 </ul>
@@ -78,29 +78,29 @@ export default function Aside({
           {/* Projects menu */}
           <li
             className={
-              activeLink === "/projects"
+              activeLink === "/dashboard/projects"
                 ? "navActive flex-left flex-col"
                 : "navactive flex-left flex-col"
             }
-            onClick={() => handleLinkClick("/projects")}
+            onClick={() => handleLinkClick("/dashboard/projects")}
           >
             <div className="flex gap-1">
               <MdOutlineWorkOutline />
               <span>Projects</span>
             </div>
-            {activeLink === "/projects" ? (
+            {activeLink === "/dashboard/projects" ? (
               <>
                 <ul>
-                  <Link href={`/projects`}>
+                  <Link href={`/dashboard/projects`}>
                     <li>All Projects</li>
                   </Link>
-                  <Link href={`/projects/draft`}>
+                  <Link href={`/dashboard/projects/draft`}>
                     <li>Draft Projects</li>
                   </Link>
-                  <Link href={`/projects/add`}>
+                  <Link href={`/dashboard/projects/add`}>
                     <li>Add Projects</li>
                   </Link>{" "}
-                  <Link href={`/projects/category`}>
+                  <Link href={`/dashboard/projects/category`}>
                     <li>All Category</li>
                   </Link>
                 </ul>
@@ -116,22 +116,22 @@ export default function Aside({
                 ? "navActive flex-left flex-col"
                 : "navactive flex-left flex-col"
             }
-            onClick={() => handleLinkClick("/shop")}
+            onClick={() => handleLinkClick("/dashboard/shop")}
           >
             <div className="flex gap-1">
               <RiShoppingCart2Line />
               <span>Shop</span>
             </div>
-            {activeLink === "/shop" ? (
+            {activeLink === "/dashboard/shop" ? (
               <>
                 <ul>
-                  <Link href={`/shops`}>
+                  <Link href={`/dashboard/shops`}>
                     <li>All Products</li>
                   </Link>
-                  <Link href={`/shops/draftshop`}>
+                  <Link href={`/dashboard/shops/draftshop`}>
                     <li>Draft Products</li>
                   </Link>
-                  <Link href={`/shops/addproduct`}>
+                  <Link href={`/dashboard/shops/addproduct`}>
                     <li>Add Product</li>
                   </Link>
                 </ul>
@@ -143,24 +143,24 @@ export default function Aside({
           {/* Gallery menu */}
           <li
             className={
-              activeLink === "/gallery"
+              activeLink === "/dashboard/gallery"
                 ? "navActive flex-left flex-col"
                 : "navactive flex-left flex-col"
             }
-            onClick={() => handleLinkClick("/gallery")}
+            onClick={() => handleLinkClick("/dashboard/gallery")}
           >
             <div className="flex gap-1">
               <GrGallery />
               <span>Gallery</span>
             </div>
-            {activeLink === "/gallery" ? (
+            {activeLink === "/dashboard/gallery" ? (
               <>
                 <ul>
-                  <Link href={`/gallery`}>
+                  <Link href={`/dashboard/gallery`}>
                     <li>All Photos</li>
                   </Link>
 
-                  <Link href={`/gallery/add`}>
+                  <Link href={`/dashboard/gallery/add`}>
                     <li>Add Photo</li>
                   </Link>
                 </ul>
@@ -169,10 +169,12 @@ export default function Aside({
               <></>
             )}
           </li>
-          <Link href={`/contacts`}>
+          <Link href={`/dashboard/contacts`}>
             <li
-              className={activeLink === `/contacts` ? "navactive" : ""}
-              onClick={() => handleLinkClick("/contacts")}
+              className={
+                activeLink === `/dashboard/contacts` ? "navactive" : ""
+              }
+              onClick={() => handleLinkClick("/dashboard/contacts")}
             >
               <TiContacts />
               <span>Contacts</span>

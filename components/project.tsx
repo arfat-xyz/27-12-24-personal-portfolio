@@ -145,7 +145,7 @@ export default function Project({
           })
           .then((res) => {
             frontendSuccessResponse({ message: res?.data?.message });
-            return router.push("/projects");
+            return router.push("/dashboard/projects");
           })
           .catch((e) =>
             frontendErrorResponse({ message: e?.response?.data?.message }),
@@ -160,7 +160,7 @@ export default function Project({
           })
           .then((res) => {
             frontendSuccessResponse({ message: res?.data?.message });
-            return router.push("/projects");
+            return router.push("/dashboard/projects");
           })
           .catch((e) =>
             frontendErrorResponse({ message: e?.response?.data?.message }),
@@ -232,7 +232,7 @@ export default function Project({
           )}
         </div>
         {/* blog client */}
-        <div className="w-100 flex-left mb-2 flex flex-col">
+        <div className="flex flex-col w-100 flex-left mb-2 ">
           <label htmlFor="client">Client link</label>
           <input
             type="text"

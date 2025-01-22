@@ -31,30 +31,30 @@ const blogSchema = z.object({
         value
           .trim()
           .replace(/\s+/g, "-") // Replace spaces with hyphens
-          .replace(/[^a-z0-9-]/g, ""), // Remove invalid characters
+          .replace(/[^a-z0-9-]/g, "") // Remove invalid characters
     )
     .refine(
       (value) => /^[a-z0-9-]+$/.test(value),
-      "Slug can only contain lowercase letters, numbers, and hyphens",
+      "Slug can only contain lowercase letters, numbers, and hyphens"
     ),
   blogCategory: z
     .array(
       z.object({
         label: stringValidation("Label"),
         value: stringValidation("Value"),
-      }),
+      })
     )
     .nonempty("At least one category must be selected"),
   images: z.array(stringValidation("Image")).optional(),
   description: stringValidation("Description").nonempty(
-    "Blog content is required",
+    "Blog content is required"
   ),
   tags: z
     .array(
       z.object({
         label: stringValidation("Tag label"),
         value: stringValidation("Tag value"),
-      }),
+      })
     )
     .nonempty("At least one tag must be selected"),
   status: z.nativeEnum(BlogStatus, {
@@ -115,7 +115,7 @@ export default function Blog({
     category.map((cat) => ({
       label: cat.name,
       value: cat.id,
-    })),
+    }))
   );
   const router = useRouter();
   const onSubmit = async (data: BlogFormData) => {
@@ -140,10 +140,10 @@ export default function Blog({
           })
           .then((res) => {
             frontendSuccessResponse({ message: res?.data?.message });
-            return router.push("/blogs");
+            return router.push("/dashboard/blogs");
           })
           .catch((e) =>
-            frontendErrorResponse({ message: e?.response?.data?.message }),
+            frontendErrorResponse({ message: e?.response?.data?.message })
           );
       } else {
         await axios
@@ -155,10 +155,10 @@ export default function Blog({
           })
           .then((res) => {
             frontendSuccessResponse({ message: res?.data?.message });
-            return router.push("/blogs");
+            return router.push("/dashboard/blogs");
           })
           .catch((e) =>
-            frontendErrorResponse({ message: e?.response?.data?.message }),
+            frontendErrorResponse({ message: e?.response?.data?.message })
           );
       }
       setRedirect(true);

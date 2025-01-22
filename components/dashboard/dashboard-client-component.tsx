@@ -18,7 +18,7 @@ import { Bar } from "react-chartjs-2";
 type MonthlyData = {
   [year: number]: number[]; // A year maps to an array of monthly counts (12 months)
 };
-const HomeClientComponent = ({
+const DashboardClientComponent = ({
   blogs,
   categories,
   projects,
@@ -35,7 +35,7 @@ const HomeClientComponent = ({
     BarElement,
     Title,
     Tooltip,
-    Legend,
+    Legend
   );
   const [blogData, setBlogData] = useState([]);
   const [projectData, setProjectData] = useState([]);
@@ -89,7 +89,7 @@ const HomeClientComponent = ({
     label: year.toString(), // Convert year to string, if necessary
     data: monthlyData[+year] || Array(12).fill(0), // Convert string to number with `+year`
     backgroundColor: `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(
-      Math.random() * 256,
+      Math.random() * 256
     )}, ${Math.floor(Math.random() * 256)})`,
   }));
 
@@ -218,4 +218,4 @@ const HomeClientComponent = ({
   );
 };
 
-export default HomeClientComponent;
+export default DashboardClientComponent;

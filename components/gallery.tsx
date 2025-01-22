@@ -27,11 +27,11 @@ const gallerySchema = z.object({
         value
           .trim()
           .replace(/\s+/g, "-") // Replace spaces with hyphens
-          .replace(/[^a-z0-9-]/g, ""), // Remove invalid characters
+          .replace(/[^a-z0-9-]/g, "") // Remove invalid characters
     )
     .refine(
       (value) => /^[a-z0-9-]+$/.test(value),
-      "Slug can only contain lowercase letters, numbers, and hyphens",
+      "Slug can only contain lowercase letters, numbers, and hyphens"
     ),
 
   images: z.array(stringValidation("Image")).optional(),
@@ -76,10 +76,10 @@ export default function Gallery({ gallery }: { gallery?: Photo }) {
           })
           .then((res) => {
             frontendSuccessResponse({ message: res?.data?.message });
-            return router.push("/gallery");
+            return router.push("/dashboard/gallery");
           })
           .catch((e) =>
-            frontendErrorResponse({ message: e?.response?.data?.message }),
+            frontendErrorResponse({ message: e?.response?.data?.message })
           );
       } else {
         await axios
@@ -89,10 +89,10 @@ export default function Gallery({ gallery }: { gallery?: Photo }) {
           })
           .then((res) => {
             frontendSuccessResponse({ message: res?.data?.message });
-            return router.push("/gallery");
+            return router.push("/dashboard/gallery");
           })
           .catch((e) =>
-            frontendErrorResponse({ message: e?.response?.data?.message }),
+            frontendErrorResponse({ message: e?.response?.data?.message })
           );
       }
       setRedirect(true);

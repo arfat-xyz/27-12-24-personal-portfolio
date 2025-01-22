@@ -17,7 +17,7 @@ const DeleteSingleProjectClientComponent = ({
 }) => {
   const router = useRouter();
   function goBack() {
-    router.push("/projects");
+    router.push("/dashboard/projects");
   }
 
   async function deleteBlog() {

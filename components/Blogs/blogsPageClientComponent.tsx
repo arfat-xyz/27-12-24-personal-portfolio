@@ -1,14 +1,13 @@
 "use client";
 import { frontendErrorResponse } from "@/lib/frontend-response-toast";
 import { Blog } from "@prisma/client";
+import axios from "axios";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { SiBloglovin } from "react-icons/si";
-import Dataloading from "../Dataloading";
-import Link from "next/link";
 import BreadcrumbWithAdminPanel from "../breadcrumb-with-admin-panel";
+import Dataloading from "../Dataloading";
 
 const BlogsPageClientComponent = () => {
   //pagination
@@ -34,7 +33,7 @@ const BlogsPageClientComponent = () => {
       console.log({ hasdf: "asdf" });
       try {
         const res = await axios.get(
-          `/api/blogs?q=${searchQuery}&page=${currentPage}&limit=${perPage}`,
+          `/api/blogs?q=${searchQuery}&page=${currentPage}&limit=${perPage}`
         );
         const returnData = res?.data?.data;
         setAllData(returnData.result);
@@ -113,12 +112,12 @@ const BlogsPageClientComponent = () => {
                   </td>
                   <td>
                     <div className="flex-center flex gap-2">
-                      <Link href={`/blogs/edit/${blog.id}`}>
+                      <Link href={`/dashboard/blogs/edit/${blog.id}`}>
                         <button>
                           <FaEdit />
                         </button>
                       </Link>
-                      <Link href={`/blogs/delete/${blog.id}`}>
+                      <Link href={`/dashboard/blogs/delete/${blog.id}`}>
                         <button>
                           <RiDeleteBin6Fill />
                         </button>

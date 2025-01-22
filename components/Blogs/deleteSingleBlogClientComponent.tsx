@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import BreadcrumbWithAdminPanel from "../breadcrumb-with-admin-panel";
 export async function generateMetadata(
   { params }: SingleProjectPageProps,
-  parent: ResolvingMetadata,
+  parent: ResolvingMetadata
 ): Promise<Metadata> {
   const singleBlogDetails = await db.blog.findUnique({
     where: {
@@ -45,7 +45,7 @@ export async function generateMetadata(
 const DeleteSingleBlogClientComponent = ({ blog }: { blog: Blog }) => {
   const router = useRouter();
   function goBack() {
-    router.push("/blogs");
+    router.push("/dashboard/blogs");
   }
 
   async function deleteBlog() {

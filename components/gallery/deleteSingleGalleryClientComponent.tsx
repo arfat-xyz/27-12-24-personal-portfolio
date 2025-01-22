@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import BreadcrumbWithAdminPanel from "../breadcrumb-with-admin-panel";
 export async function generateMetadata(
   { params }: SingleProjectPageProps,
-  parent: ResolvingMetadata,
+  parent: ResolvingMetadata
 ): Promise<Metadata> {
   const singleGalleryDetails = await db.photo.findUnique({
     where: {
@@ -48,7 +48,7 @@ const DeleteSingleGalleryClientComponent = ({
 }) => {
   const router = useRouter();
   function goBack() {
-    router.push("/gallery");
+    router.push("/dashboard/gallery");
   }
 
   async function deleteGallery() {

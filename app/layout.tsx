@@ -1,21 +1,7 @@
-import MainLayoutComponent from "@/components/mainLayoutComponent";
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
-import SessionProvider from "../components/SessionProvider";
 import "./../styles/globals.css";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,13 +13,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
+  // const session = await getServerSession();
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <SessionProvider session={session}>
-          <MainLayoutComponent>{children}</MainLayoutComponent>
-        </SessionProvider>
+      <body className={``}>
+        {/* <SessionProvider session={session}> */}
+        {children}
+        {/* </SessionProvider> */}
         <Toaster />
       </body>
     </html>
