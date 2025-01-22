@@ -1,4 +1,6 @@
+import { auth } from "@/auth";
 import type { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
 import "./../styles/globals.css";
 import "./globals.css";
@@ -13,13 +15,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const session = await getServerSession();
+  const session = await auth();
   return (
     <html lang="en">
       <body className={``}>
-        {/* <SessionProvider session={session}> */}
-        {children}
-        {/* </SessionProvider> */}
+        <SessionProvider session={session}>{children}</SessionProvider>
         <Toaster />
       </body>
     </html>

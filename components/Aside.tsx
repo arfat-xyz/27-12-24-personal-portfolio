@@ -1,3 +1,4 @@
+import { logout } from "@/actions/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -181,7 +182,9 @@ export default function Aside({
             </li>
           </Link>
         </ul>
-        <button className="logoutbtn">Logout</button>
+        <button className="logoutbtn" onClick={() => logout()}>
+          Logout
+        </button>
       </aside>
     </>
   );
