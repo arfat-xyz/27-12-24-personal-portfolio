@@ -44,6 +44,7 @@ export function generateSearchFilter<
     | Prisma.ProjectCategoryWhereInput
     | Prisma.ProjectWhereInput
     | Prisma.PhotoWhereInput
+    | Prisma.ContactWhereInput,
 >(fields: Array<keyof T>, query: string): T["OR"] {
   return fields.map((field) => ({
     [field]: {
@@ -61,7 +62,7 @@ export const paginationSearchForBlogSchema = paginationSearchSchema.extend({
       (val) => !val || Object.values(BlogStatus).includes(val as BlogStatus),
       {
         message: "Invalid status value. Allowed values: Draft, Publish",
-      }
+      },
     )
     .default(BlogStatus.Publish), // Default value if none provided
 });
@@ -77,7 +78,7 @@ export const paginationSearchForProjectSchema = paginationSearchSchema.extend({
       (val) => !val || Object.values(BlogStatus).includes(val as BlogStatus),
       {
         message: "Invalid status value. Allowed values: Draft, Publish",
-      }
+      },
     )
     .default(BlogStatus.Publish), // Default value if none provided
 });

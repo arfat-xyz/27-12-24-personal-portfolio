@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsPostcard } from "react-icons/bs";
+import { FaGear } from "react-icons/fa6";
 import { GrGallery } from "react-icons/gr";
 import { IoHome } from "react-icons/io5";
 import { MdOutlineWorkOutline } from "react-icons/md";
@@ -179,6 +180,17 @@ export default function Aside({
             >
               <TiContacts />
               <span>Contacts</span>
+            </li>
+          </Link>
+          <Link href={`/dashboard/settings`}>
+            <li
+              className={
+                activeLink === `/dashboard/settings` ? "navactive" : ""
+              }
+              onClick={() => handleLinkClick("/dashboard/settings")}
+            >
+              <FaGear />
+              <span>Settings</span>
             </li>
           </Link>
         </ul>

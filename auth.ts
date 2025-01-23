@@ -14,6 +14,59 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: config.githubSecret,
       allowDangerousEmailAccountLinking: true,
     }),
+    // CredentialsProvider({
+    //   name: "Credentials",
+    //   credentials: {
+    //     email: { label: "Email", type: "text" },
+    //     password: {},
+    //   },
+    //   async authorize(credentials, req) {
+    //     // Add logic here to look up the user from the credentials supplied
+    //     if (
+    //       !credentials ||
+    //       typeof credentials.email !== "string" ||
+    //       typeof credentials.password !== "string"
+    //     ) {
+    //       toast.error("Invalid email or password");
+    //       return null;
+    //     }
+    //     const isItOAuthUser = await db.user.count({
+    //       where: {
+    //         email: credentials.email,
+    //         emailVerified: {
+    //           not: null,
+    //         },
+    //       },
+    //     });
+    //     if (isItOAuthUser) {
+    //       toast.error("Please try to login with other login");
+    //       return null;
+    //     }
+
+    //     const user = await db.user.findUnique({
+    //       where: { email: credentials.email },
+    //     });
+    //     if (!user) {
+    //       toast.error("Invalid email or password");
+    //       return null;
+    //     }
+    //     const isPasswordCorrect = compare(
+    //       credentials!.password,
+    //       user?.hashedPassword as string,
+    //     );
+    //     if (!isPasswordCorrect) {
+    //       toast.error("Invalid email or password");
+    //       return null;
+    //     }
+    //     return {
+    //       id: user.id,
+    //       name: user.name,
+    //       email: user.email,
+    //       image: user.image,
+    //       role: user.role,
+    //     };
+    //   },
+    // }),
   ],
   callbacks: {
     async signIn({ user }) {
@@ -23,7 +76,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user?.email,
         },
       });
-      console.log({ userAlreadyExist });
 
       if (!userAlreadyExist) {
         await db.user.create({
@@ -31,6 +83,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email: user?.email,
             name: user?.name,
             image: user?.image,
+            emailVerified: new Date(),
           },
         });
       }
