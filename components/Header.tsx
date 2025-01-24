@@ -1,9 +1,14 @@
-import { RiBarChartHorizontalLine } from "react-icons/ri";
-import { BiExitFullscreen } from "react-icons/bi";
-import { useState } from "react";
-import { GoScreenFull } from "react-icons/go";
 import { imageConfig } from "@/lib/image-config";
-export default function Header({ handleAsideOpen }) {
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { BiExitFullscreen } from "react-icons/bi";
+import { GoScreenFull } from "react-icons/go";
+import { RiBarChartHorizontalLine } from "react-icons/ri";
+export default function Header({
+  handleAsideOpen,
+}: {
+  handleAsideOpen: () => void;
+}) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
@@ -14,6 +19,8 @@ export default function Header({ handleAsideOpen }) {
       document.exitFullscreen().then(() => setIsFullScreen(false));
     }
   };
+  const { data } = useSession();
+  console.log(data);
   return (
     <>
       <header className="header flex-sb flex">

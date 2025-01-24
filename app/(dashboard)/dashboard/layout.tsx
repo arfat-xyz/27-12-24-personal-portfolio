@@ -1,4 +1,5 @@
 import MainLayoutComponent from "@/components/mainLayoutComponent";
+import "@/styles/globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

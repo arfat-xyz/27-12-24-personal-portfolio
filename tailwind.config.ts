@@ -13,6 +13,15 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      animation: {
+        rotate: "rotate360 0.5s linear", // Add your animation with timing
+      },
+      keyframes: {
+        rotate360: {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
+        },
+      },
     },
   },
   plugins: [],
