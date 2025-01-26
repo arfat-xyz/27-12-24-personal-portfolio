@@ -65,6 +65,7 @@ export const paginationSearchForBlogSchema = paginationSearchSchema.extend({
       },
     )
     .default(BlogStatus.Publish), // Default value if none provided
+  blogCategoryName: z.string().optional(),
 });
 export const paginationSearchForBlogTagsSchema = paginationSearchSchema.extend({
   name: z.string().optional(),
@@ -81,4 +82,5 @@ export const paginationSearchForProjectSchema = paginationSearchSchema.extend({
       },
     )
     .default(BlogStatus.Publish), // Default value if none provided
+  projectCategoryName: z.string().optional(),
 });

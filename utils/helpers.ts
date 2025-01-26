@@ -5,3 +5,6 @@ export function saltAndHashPassword(password: any) {
   const hash = bcrypt.hashSync(password, salt); // Synchronously hash the password
   return hash; // Return the hash directly as a string
 }
+export function formatNumber(num: number): string {
+  return num.toString().padStart(2, "0");
+}

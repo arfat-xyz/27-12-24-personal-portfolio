@@ -39,37 +39,62 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const searchParams = Object.fromEntries(url.searchParams.entries());
     const paramsData = paginationSearchForBlogSchema.parse(searchParams);
-    const { limit, page, q, status } = paramsData;
+    const { limit, page, q, status, blogCategoryName } = paramsData;
 
     const skip = (page - 1) * limit;
-    const blogsFieldsToSearch = ["description", "slug", "title"] as Array<
+    const blogFieldsToSearch = ["description", "slug", "title"] as Array<
       keyof Prisma.BlogWhereInput
     >;
     const blogSearchFilter = generateSearchFilter<Prisma.BlogWhereInput>(
-      blogsFieldsToSearch,
-      q
+      blogFieldsToSearch,
+      q,
     );
-    const whereProps = {
+
+    // Base where clause
+    const whereProps: Prisma.BlogWhereInput = {
       OR: blogSearchFilter,
       status: status as BlogStatus,
     };
-    // Retrieve the list of feature requests from the database based on search and pagination
-    const notifications = await db.blog.findMany({
+
+    // Add category filter if `blogCategoryName` is provided
+    if (blogCategoryName) {
+      whereProps.BlogTagRelation = {
+        some: {
+          blogCategory: {
+            name: {
+              equals: blogCategoryName,
+              mode: "insensitive",
+            },
+          },
+        },
+      };
+    }
+
+    // Retrieve the list of blogs from the database based on filters
+    const blogs = await db.blog.findMany({
       where: whereProps,
       skip,
       take: limit,
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        BlogTagRelation: {
+          include: {
+            blogCategory: true,
+          },
+        },
+      },
     });
 
-    // Count the total number of records that match the query
+    // Count the total number of matching records
     const total = await db.blog.count({
       where: whereProps,
     });
 
     // Calculate total pages
     const totalPage = Math.ceil(total / limit);
+
     return formatResponse(
       {
         meta: {
@@ -78,11 +103,10 @@ export async function GET(req: Request) {
           total,
           totalPage,
         },
-
-        result: notifications,
+        result: blogs,
       },
       "Successful",
-      200
+      200,
     );
   } catch (error) {
     return routeErrorHandler(error);

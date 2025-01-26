@@ -39,27 +39,51 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const searchParams = Object.fromEntries(url.searchParams.entries());
     const paramsData = paginationSearchForProjectSchema.parse(searchParams);
-    const { limit, page, q, status } = paramsData;
+    const { limit, page, q, status, projectCategoryName } = paramsData;
 
     const skip = (page - 1) * limit;
-    const blogsFieldsToSearch = ["description", "slug", "title"] as Array<
+    const projectFieldsToSearch = ["description", "slug", "title"] as Array<
       keyof Prisma.ProjectWhereInput
     >;
-    const blogSearchFilter = generateSearchFilter<Prisma.ProjectWhereInput>(
-      blogsFieldsToSearch,
-      q
+    const projectSearchFilter = generateSearchFilter<Prisma.ProjectWhereInput>(
+      projectFieldsToSearch,
+      q,
     );
-    const whereProps = {
-      OR: blogSearchFilter,
+
+    // Base where clause
+    const whereProps: Prisma.ProjectWhereInput = {
+      OR: projectSearchFilter,
       status: status as ProjectStatus,
     };
-    // Retrieve the list of feature requests from the database based on search and pagination
-    const notifications = await db.project.findMany({
+
+    // Add category filter if provided
+    if (projectCategoryName) {
+      whereProps.ProjectCategoryRelation = {
+        some: {
+          projectCategory: {
+            name: {
+              equals: projectCategoryName,
+              mode: "insensitive",
+            },
+          },
+        },
+      };
+    }
+
+    // Retrieve the list of projects from the database based on filters
+    const projects = await db.project.findMany({
       where: whereProps,
       skip,
       take: limit,
       orderBy: {
         createdAt: "desc",
+      },
+      include: {
+        ProjectCategoryRelation: {
+          include: {
+            projectCategory: true,
+          },
+        },
       },
     });
 
@@ -70,6 +94,7 @@ export async function GET(req: Request) {
 
     // Calculate total pages
     const totalPage = Math.ceil(total / limit);
+
     return formatResponse(
       {
         meta: {
@@ -78,11 +103,10 @@ export async function GET(req: Request) {
           total,
           totalPage,
         },
-
-        result: notifications,
+        result: projects,
       },
       "Successful",
-      200
+      200,
     );
   } catch (error) {
     return routeErrorHandler(error);
