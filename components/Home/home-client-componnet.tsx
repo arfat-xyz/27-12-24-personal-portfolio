@@ -1,11 +1,15 @@
 "use client";
 
 import { frontendErrorResponse } from "@/lib/frontend-response-toast";
-import { Blog, Project, ProjectCategory } from "@prisma/client";
+import { BlogWithCategories } from "@/types/frontend-types";
+import { Project, ProjectCategory } from "@prisma/client";
 import { useEffect, useState } from "react";
+import BlogSection from "./blog-section";
+import ExperienceSection from "./experience-section";
 import HeroSection from "./hero-section";
 import ProjectsSection from "./projects-section";
 import ServiceSection from "./service-section";
+import SkillsSection from "./skills-section";
 
 const HomeClientComponent = ({
   allProjectCategory,
@@ -14,7 +18,7 @@ const HomeClientComponent = ({
 }) => {
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [isLoadingBlogs, setIsLoadingBlogs] = useState(false);
-  const [blogLists, setBlogLists] = useState<Blog[]>([]);
+  const [blogLists, setBlogLists] = useState<BlogWithCategories[]>([]);
   const [projectLists, setProjectLists] = useState<Project[]>([]);
   const [projectCategoryName, setProjectCategoryName] = useState("All");
   const [blogCategoryName, setBlogCategoryName] = useState("All");
@@ -93,11 +97,16 @@ const HomeClientComponent = ({
         projectCategoryName={projectCategoryName}
       />
       {/* Experience study */}
-      <section className="exstudy"></section>
+      <ExperienceSection />
       {/* My Skills */}
-      <section className="myskills"></section>
+      <SkillsSection />
       {/* Recent Blogs */}
-      <section className="recentblogs"></section>
+      <BlogSection
+        blogCategoryName={blogCategoryName}
+        blogLists={blogLists}
+        isLoadingBlogs={isLoadingBlogs}
+        setBlogCategoryName={setBlogCategoryName}
+      />
     </>
   );
 };

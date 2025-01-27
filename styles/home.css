@@ -232,6 +232,7 @@ font-family: "Russo One", sans-serif; */
   --week-white: #f6f3fc;
   --dark-site-secondary: #19195c;
   --main-hover-color: #905ff1;
+  --light-mode-color: #fff;
 }
 
 .container {
@@ -911,7 +912,7 @@ header.sticky {
 }
 
 .dark .services_titles p {
-  color: #000;
+  color: var(--main-site-color);
 }
 
 .services_menu {
@@ -936,7 +937,7 @@ header.sticky {
 }
 
 .dark .services_item p {
-  color: #000;
+  color: var(--main-site-color);
 }
 
 .left_s_box {
@@ -1144,6 +1145,7 @@ header.sticky {
   padding: 8rem 1rem;
   padding-top: 10rem;
   background-color: #0f0715;
+  color: var(--pure-white);
 }
 
 .dark .projects {
@@ -1193,7 +1195,7 @@ header.sticky {
 }
 
 .dark .project_titles p {
-  color: var(--dark-black);
+  color: var(--main-site-color);
 }
 
 .projects_cards {
@@ -1477,6 +1479,7 @@ header.sticky {
   font-size: 26px;
   margin-top: 10px;
   margin-bottom: 10px;
+  color: #fff;
 }
 
 .dark .exper_card h3 {
@@ -1597,10 +1600,12 @@ header.sticky {
   overflow: hidden;
   z-index: 1;
   transition: 0.3s ease-in-out;
+  color: #fff;
 }
 
 .dark .mys_inner {
   background: var(--week-white);
+  color: #000;
 }
 
 .mys_inner::before {
@@ -1676,6 +1681,7 @@ header.sticky {
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
+  color: #fff;
 }
 
 .re_blogimg {
@@ -1743,6 +1749,7 @@ header.sticky {
 .footer {
   padding: 2rem 1rem;
   background: #050709;
+  color: var(--light-mode-color);
 }
 
 .dark .footer {

@@ -1,10 +1,8 @@
-import {
-  mainPageheroSectionFooterExperties,
-  socialLinks,
-} from "@/lib/constants";
+import { mainPageheroSectionFooterExperties } from "@/lib/constants";
 import { imageConfig } from "@/lib/image-config";
 import Link from "next/link";
 import { BiDownload } from "react-icons/bi";
+import SocialLinksComponent from "../social-links-component";
 
 const HeroSection = () => {
   return (
@@ -40,15 +38,7 @@ const HeroSection = () => {
               >
                 Download CV <BiDownload />
               </Link>
-              <ul className="hero_social">
-                {socialLinks.map(({ href, iconName: Icon }, i) => (
-                  <li key={i}>
-                    <Link href={href} className="">
-                      <Icon />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <SocialLinksComponent />
             </div>
           </div>
           {/* hero right section  */}

@@ -1,5 +1,6 @@
 "use client";
 import { mainPageNavList } from "@/lib/constants";
+import { imageConfig } from "@/lib/image-config";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -64,7 +65,7 @@ const HomeHeader = () => {
         <div className="logo flex gap-2">
           <Link href={"/"}>
             <img
-              src={darkMode ? "/img/white.png" : "/img/logo.png"}
+              src={darkMode ? imageConfig.whitePNG : imageConfig.logoPNG}
               alt="logo"
             />
           </Link>

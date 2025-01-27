@@ -34,13 +34,6 @@ model Blog {
   @@map("blogs") // Matches the MongoDB collection name
 }
 
-// model BlogCategory {
-//   id    String   @id @default(cuid()) @map("_id")
-//   name  String   @unique
-//   blogs Blog[]   @relation("BlogCategories")
-//   createdAt DateTime @default(now())
-// }
-
 model BlogCategoryRelation {
   id             String       @id @default(cuid()) @map("_id")
   blogId         String
@@ -60,12 +53,19 @@ model BlogCategory {
 }
 
 model Comment {
-  id        String   @id @default(cuid()) @map("_id")
-  content   String
-  blog      Blog     @relation("BlogComments", fields: [blogId], references: [id])
-  blogId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String    @id @default(cuid()) @map("_id")
+  contentPera String
+  name        String
+  email       String
+  title       String
+  mainComment String
+  blog        Blog      @relation("BlogComments", fields: [blogId], references: [id])
+  blogId      String
+  parentId    String?   @map("parent_id")
+  parent      Comment?  @relation("ParentComment", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    Comment[] @relation("ParentComment")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Project {

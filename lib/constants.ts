@@ -2,6 +2,7 @@ import { FaGithub, FaTwitter } from "react-icons/fa";
 import { GrLinkedinOption } from "react-icons/gr";
 import { LiaBasketballBallSolid } from "react-icons/lia";
 import { IconType } from "react-icons/lib";
+import { imageConfig } from "./image-config";
 
 export const mainPageNavList = [
   {
@@ -98,17 +99,117 @@ export const mainPageServicesSection = [
   },
 ];
 
-export const mainPageProjectSectionButtons = [
+export const mainPageExperienceSectionExperiences = [
   {
-    name: "All",
+    duration: "2020 - Present",
+    companyName: "Todvob",
+    position: "Full Stack Web Developer",
   },
   {
-    name: "Website",
+    duration: "2020 - Present",
+    companyName: "Todvob",
+    position: "Full Stack Web Developer",
   },
   {
-    name: "Apps",
+    duration: "2020 - Present",
+    companyName: "Todvob",
+    position: "Full Stack Web Developer",
   },
   {
-    name: "Digital",
+    duration: "2020 - Present",
+    companyName: "Todvob",
+    position: "Full Stack Web Developer",
+  },
+  {
+    duration: "2020 - Present",
+    companyName: "Todvob",
+    position: "Full Stack Web Developer",
+  },
+];
+export const mainPageExperienceSectionEducations = [
+  {
+    duration: "2020 - Present",
+    companyName: "Todvob",
+    position: "Full Stack Web Developer",
+  },
+  {
+    duration: "2020 - Present",
+    companyName: "Todvob",
+    position: "Full Stack Web Developer",
+  },
+  {
+    duration: "2020 - Present",
+    companyName: "Todvob",
+    position: "Full Stack Web Developer",
+  },
+  {
+    duration: "2020 - Present",
+    companyName: "Todvob",
+    position: "Full Stack Web Developer",
+  },
+  {
+    duration: "2020 - Present",
+    companyName: "Todvob",
+    position: "Full Stack Web Developer",
+  },
+];
+
+export const mainPageSkillsSectionSkills = [
+  {
+    image: imageConfig.pythonSVG,
+    percentage: "92%",
+    name: "Python",
+  },
+  {
+    image: imageConfig.firebaseSVG,
+    percentage: "80%",
+    name: "Firebase",
+  },
+  {
+    image: imageConfig.mongoDbSVG,
+    percentage: "98%",
+    name: "MongoDb",
+  },
+  {
+    image: imageConfig.reduxSVG,
+    percentage: "85%",
+    name: "Redux",
+  },
+  {
+    image: imageConfig.javascriptSVG,
+    percentage: "99%",
+    name: "JavaScript",
+  },
+  {
+    image: imageConfig.pythonSVG,
+    percentage: "92%",
+    name: "Python",
+  },
+];
+
+export const mainPageFooterMenu = [
+  {
+    href: "/services",
+    name: "Servises",
+  },
+  {
+    href: "/services",
+    name: "Works",
+  },
+  {
+    href: "/services",
+    name: "Resume",
+  },
+  {
+    href: "/services",
+    name: "Skills",
+  },
+  {
+    href: "/services",
+    name: "Testimonials",
+  },
+  {
+    href: "/services",
+    name: "Contact",
   },
 ];

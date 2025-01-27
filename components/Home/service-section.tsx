@@ -21,22 +21,21 @@ const ServiceSection = () => {
         </div>
         <div className="services_menu">
           {mainPageServicesSection.map(({ description, title }, i) => (
-            <>
-              <div
-                className={`services_item ${activeIndex === i ? "sactive" : ""}`}
-                onMouseOver={() => handleHover(i)}
-                onMouseOut={handleMouseOut}
-              >
-                <div className="left_s_box" key={i}>
-                  <span className="">{formatNumber(i + 1)}</span>
-                  <h3>{title}</h3>
-                </div>
-                <div className="right_s_box">
-                  <p>{description}</p>
-                </div>
-                <GoArrowUpRight />
+            <div
+              key={i}
+              className={`services_item ${activeIndex === i ? "sactive" : ""}`}
+              onMouseOver={() => handleHover(i)}
+              onMouseOut={handleMouseOut}
+            >
+              <div className="left_s_box" key={i}>
+                <span className="">{formatNumber(i + 1)}</span>
+                <h3>{title}</h3>
               </div>
-            </>
+              <div className="right_s_box">
+                <p>{description}</p>
+              </div>
+              <GoArrowUpRight />
+            </div>
           ))}
         </div>
       </div>

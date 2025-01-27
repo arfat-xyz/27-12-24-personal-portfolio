@@ -5,4 +5,12 @@ export const imageConfig = {
   mePNG: `/img/me.png`,
   resumePDF: "/img/resume.pdf",
   noImgaePNG: "/img/noimage.png",
+  pythonSVG: "/img/python.svg",
+  firebaseSVG: "/img/firebase.svg",
+  mongoDbSVG: "/img/mongodb.svg",
+  reduxSVG: "/img/redux.svg",
+  reactSVG: "/img/react.svg",
+  javascriptSVG: "/img/js.svg",
+  whitePNG: "/img/white.png",
+  logoPNG: "/img/logo.png",
 };

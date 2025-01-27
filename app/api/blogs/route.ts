@@ -87,6 +87,13 @@ export async function GET(req: Request) {
       },
     });
 
+    // Add a `category` field with all related category names for each blog
+    const result = blogs.map((blog) => ({
+      ...blog,
+      categories: blog.BlogTagRelation.map((relation) => relation.blogCategory),
+      BlogTagRelation: null,
+    }));
+
     // Count the total number of matching records
     const total = await db.blog.count({
       where: whereProps,
@@ -103,7 +110,7 @@ export async function GET(req: Request) {
           total,
           totalPage,
         },
-        result: blogs,
+        result,
       },
       "Successful",
       200,
