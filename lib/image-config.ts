@@ -13,4 +13,5 @@ export const imageConfig = {
   javascriptSVG: "/img/js.svg",
   whitePNG: "/img/white.png",
   logoPNG: "/img/logo.png",
+  coderJPG: "/img/coder.jpg",
 };
